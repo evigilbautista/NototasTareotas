@@ -59,11 +59,7 @@ class MarsViewModel : ViewModel() {
                 val listResult = MarsApi.retrofitService.GET()
                 MarsUiState.Success(
                     listResult.toString()
-
                 )
-
-
-
             } catch (e: IOException) {
                 MarsUiState.Error
             } catch (e: HttpException) {

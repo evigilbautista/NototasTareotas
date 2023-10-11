@@ -60,15 +60,7 @@ fun HomeScreen(
 
         is MarsUiState.Error -> ErrorScreen( modifier = modifier.fillMaxSize())
     }
-
 }
-
-
-
-
-
-
-
 
 /**
  * The home screen displaying the loading message.
@@ -89,8 +81,6 @@ fun LoadingScreen(modifier: Modifier = Modifier) {
 @Composable
 fun ResultScreen(photos: String, modifier: Modifier = Modifier) {
 
-
-
     Box(
         contentAlignment = Alignment.TopCenter,
         modifier = modifier
@@ -104,11 +94,7 @@ fun ResultScreen(photos: String, modifier: Modifier = Modifier) {
 
                 .fillMaxWidth()
         ) {
-            Text(text = stringResource(R.string.Borrar+))}
-
-
-
-
+            Text(text = stringResource(R.string.Borrar))}
     }
     Box(
         contentAlignment = Alignment.Center,
@@ -116,16 +102,12 @@ fun ResultScreen(photos: String, modifier: Modifier = Modifier) {
     ) {
         Text(text = photos)
     }
-
     Box(
         contentAlignment = Alignment.BottomCenter,
         modifier = modifier
     ) {
-
         EditTextInBoxPreview()
-
     }
-
 }
 
 @Composable
@@ -157,13 +139,6 @@ fun EditTextInBoxPreview() {
     EditTextInBox()
 }
 
-
-
-
-
-
-
-
 @Composable
 fun ErrorScreen(modifier: Modifier = Modifier) {
     Column(
@@ -175,17 +150,12 @@ fun ErrorScreen(modifier: Modifier = Modifier) {
             painter = painterResource(id = R.drawable.ic_connection_error), contentDescription = ""
         )
         Text(text = stringResource(R.string.loading_failed), modifier = Modifier.padding(16.dp))
-
-
     }
 }
 
 /**
  * ResultScreen displaying number of photos retrieved.
  */
-
-
-
 
 @Preview(showBackground = true)
 @Composable
@@ -209,10 +179,5 @@ fun PhotosGridScreenPreview() {
     MarsPhotosTheme {
         ResultScreen(stringResource(R.string.placeholder_success))
     }
-
-
-
-
-
 
 }

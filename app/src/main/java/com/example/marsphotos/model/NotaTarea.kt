@@ -16,39 +16,38 @@
 
 package com.example.marsphotos.model
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import com.example.marsphotos.network.MarsApiService
-import com.example.marsphotos.network.MarsApi
 
 
 /**
  * This data class defines a Mars photo which includes an ID, and the image URL.
  */
-@Serializable
+@Entity
 data class NotaTarea(
 
-@SerialName("id") val id: Int,
-@SerialName("titulo") val titulo: String,
-@SerialName("contenido") val contenido: String,
-@SerialName("estatus") val estatus: Int,
-@SerialName("tipo") val tipo: Int,
-@SerialName("fecha") val fecha: String,
-@SerialName("fechaModi") val fechaModi: String,
-@SerialName("fechaCum") val fechaCum: String
+    @PrimaryKey(autoGenerate = true)
+    var idNota: Int,
+    var titulo: String,
+    var contenido: String,
+    var estatus: Int,
+    var tipo: Int,
+    var fecha: Long,
+    var fechaModi: Long,
+    var fechaCum: Long
 
 ) {
-    override fun toString(): String {
-        return """
-            |NotaTarea:
-            |ID: $id
-            |Título: $titulo
-            |Contenido: $contenido
-            |Estatus: $estatus
-            |Tipo: $tipo
-            |Fecha: $fecha
-            |Fecha de Modificación: $fechaModi
-            |Fecha de Cumplimiento: $fechaCum
-        """.trimMargin()
-    }
+    constructor(titulo: String, contenido: String, estatus: Int, tipo: Int, fecha: Long, fechaModi: Long, fechaCum: Long) :
+            this(
+                0,
+                titulo,
+                contenido,
+                estatus,
+                tipo,
+                fecha,
+                fechaModi,
+                fechaCum
+            )
 }
