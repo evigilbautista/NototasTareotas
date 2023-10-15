@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-data class recordatorios (
+data class Recordatorios (
     @PrimaryKey(autoGenerate = true)
     var idRecordaorios: Int,
     var idNota: Int,

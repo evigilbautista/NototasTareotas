@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-data class archivos(
+data class Archivos(
     @PrimaryKey(autoGenerate = true)
     var idArchivos: Int,
     var idNota: Int,

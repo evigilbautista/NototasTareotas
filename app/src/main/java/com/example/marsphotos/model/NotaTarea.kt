@@ -25,11 +25,16 @@ import kotlinx.serialization.Serializable
 /**
  * This data class defines a Mars photo which includes an ID, and the image URL.
  */
+
+
+//Tipo 0 = Nota --- 1 = Tarea
+
 @Entity
 data class NotaTarea(
 
     @PrimaryKey(autoGenerate = true)
     var idNota: Int,
+    var idUser: Int,
     var titulo: String,
     var contenido: String,
     var estatus: Int,
@@ -39,9 +44,10 @@ data class NotaTarea(
     var fechaCum: Long
 
 ) {
-    constructor(titulo: String, contenido: String, estatus: Int, tipo: Int, fecha: Long, fechaModi: Long, fechaCum: Long) :
+    constructor(idUser: Int, titulo: String, contenido: String, estatus: Int, tipo: Int, fecha: Long, fechaModi: Long, fechaCum: Long) :
             this(
                 0,
+                idUser,
                 titulo,
                 contenido,
                 estatus,

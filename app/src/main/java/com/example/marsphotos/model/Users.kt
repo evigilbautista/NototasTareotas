@@ -2,7 +2,7 @@ package com.example.marsphotos.model
 
 import androidx.room.PrimaryKey
 
-data class user(
+data class Users(
     @PrimaryKey(autoGenerate = true)
     var idUser: Int,
     var nombre: String,
