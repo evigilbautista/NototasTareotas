@@ -62,19 +62,34 @@ fun NoteDetailScreen(noteId: Int, navController: NavController, viewModel: Notes
         mutableStateOf(noteDetailPlaceHolder)
     }
 
-    val exoPlayer = remember {
+    val videoExoPlayer = remember {
         SimpleExoPlayer.Builder(context).build()
     }
 
+    val audioExoPlayer = remember {
+        SimpleExoPlayer.Builder(context).build()
+    }
+
+    val audioUri = note.value.audioUri
     val videoUri = note.value.videoUri
+
+    LaunchedEffect(audioUri) {
+        if (!audioUri.isNullOrEmpty()) {
+            // Prepara el reproductor de audio con la URI del audio
+            val audioMediaItem = MediaItem.fromUri(audioUri)
+            audioExoPlayer.setMediaItem(audioMediaItem)
+            audioExoPlayer.prepare()
+            audioExoPlayer.play()
+        }
+    }
 
     LaunchedEffect(videoUri) {
         if (!videoUri.isNullOrEmpty()) {
             // Prepara el reproductor de video con la URI del video
-            val mediaItem = MediaItem.fromUri(videoUri)
-            exoPlayer.setMediaItem(mediaItem)
-            exoPlayer.prepare()
-            exoPlayer.play()
+            val videoMediaItem = MediaItem.fromUri(videoUri)
+            videoExoPlayer.setMediaItem(videoMediaItem)
+            videoExoPlayer.prepare()
+            videoExoPlayer.play()
         }
     }
 
@@ -108,7 +123,57 @@ fun NoteDetailScreen(noteId: Int, navController: NavController, viewModel: Notes
                 Column(
                     Modifier
                         .fillMaxSize()
+
                 ) {
+
+                    Spacer(modifier = Modifier.padding(12.dp))
+                    // Sección de video
+                    if (videoUri != null && videoUri.isNotEmpty()) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(300.dp)
+                        ) {
+                            AndroidView(
+                                factory = { context ->
+                                    PlayerView(context).apply {
+                                        player = videoExoPlayer
+                                        layoutParams = ViewGroup.LayoutParams(
+                                            ViewGroup.LayoutParams.MATCH_PARENT,
+                                            ViewGroup.LayoutParams.MATCH_PARENT
+                                        )
+                                    }
+                                },
+                                modifier = Modifier.fillMaxSize(),
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.padding(12.dp))
+
+                    // Sección de audio
+                    if (audioUri != null && audioUri.isNotEmpty()) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(100.dp)
+                        ) {
+                            AndroidView(
+                                factory = { context ->
+                                    PlayerView(context).apply {
+                                        player = audioExoPlayer
+                                        layoutParams = ViewGroup.LayoutParams(
+                                            ViewGroup.LayoutParams.MATCH_PARENT,
+                                            ViewGroup.LayoutParams.MATCH_PARENT
+                                        )
+                                    }
+                                },
+                                modifier = Modifier.fillMaxSize(),
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.padding(12.dp))
+                    // Sección de imagen
                     if (note.value.imageUri != null && note.value.imageUri!!.isNotEmpty()) {
                         Image(
                             painter = rememberAsyncImagePainter(
@@ -119,30 +184,10 @@ fun NoteDetailScreen(noteId: Int, navController: NavController, viewModel: Notes
                             ),
                             contentDescription = null,
                             modifier = Modifier
-                                .fillMaxHeight(0.3f)
                                 .fillMaxWidth()
+                                .height(200.dp) // Ajusta la altura según tus necesidades
                                 .padding(6.dp),
                             contentScale = ContentScale.Crop
-                        )
-                    }
-
-                    // Reproductor de video
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(300.dp)
-                    ) {
-                        AndroidView(
-                            factory = { context ->
-                                PlayerView(context).apply {
-                                    player = exoPlayer
-                                    layoutParams = ViewGroup.LayoutParams(
-                                        ViewGroup.LayoutParams.MATCH_PARENT,
-                                        ViewGroup.LayoutParams.MATCH_PARENT
-                                    )
-                                }
-                            },
-                            modifier = Modifier.fillMaxSize(),
                         )
                     }
 
@@ -150,15 +195,16 @@ fun NoteDetailScreen(noteId: Int, navController: NavController, viewModel: Notes
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
+                            .padding(12.dp)
                     ) {
                         Text(
                             text = note.value.title,
-                            modifier = Modifier.padding(top = 24.dp, start = 12.dp, end = 24.dp),
                             fontSize = 36.sp,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(bottom = 8.dp)
                         )
-                        Text(text = note.value.dateUpdated, Modifier.padding(12.dp), color = Color.Gray)
-                        Text(text = note.value.note, Modifier.padding(12.dp))
+                        Text(text = note.value.dateUpdated, color = Color.Gray, modifier = Modifier.padding(bottom = 8.dp))
+                        Text(text = note.value.note)
                     }
                 }
             }

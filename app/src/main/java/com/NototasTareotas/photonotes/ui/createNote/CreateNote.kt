@@ -1,10 +1,15 @@
 package com.NototasTareotas.photonotes.ui.createNote
 
 import android.annotation.SuppressLint
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
 import android.media.MediaPlayer
 import android.net.Uri
 import android.view.ViewGroup
 import android.widget.MediaController
+import android.widget.Toast
 import android.widget.VideoView
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -17,6 +22,7 @@ import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.currentCompositionLocalContext
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,15 +37,19 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.app.NotificationCompat
+import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
+import com.NototasTareotas.photonotes.MainActivity
 import com.NototasTareotas.photonotes.PhotoNotesApp
 import com.NototasTareotas.photonotes.ui.GenericAppBar
 import com.NototasTareotas.photonotes.ui.NotesList.NotesFab
 import com.NototasTareotas.photonotes.ui.NotesViewModel
 import com.NototasTareotas.photonotes.ui.theme.PhotoNotesTheme
 import com.NototasTareotas.photonotes.R
+
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -53,6 +63,8 @@ fun CreateNoteScreen(
     val currentVideo = remember { mutableStateOf("") }
     val currentAudio = remember { mutableStateOf("") }
     val saveButtonState = remember { mutableStateOf(false) }
+val notif = LocalContext.current
+
 
     val getImageRequest = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenDocument()
@@ -102,8 +114,10 @@ fun CreateNoteScreen(
                                 currentVideo.value,
                                 currentAudio.value
                             )
+
+                            showNotification(notif, "Nota guardada")
                             navController.popBackStack()
-                        },
+                                      },
                         iconState = saveButtonState
                     )
                 },
@@ -213,6 +227,7 @@ fun CreateNoteScreen(
     }
 }
 
+
 @Composable
 fun VideoPlayer(videoUrl: String) {
     val context = LocalContext.current
@@ -308,3 +323,26 @@ fun AudioPlayer(audioUrl: String) {
         }
     }
 }
+
+private fun showNotification(context: Context, message: String) {
+    // Crear un intent para abrir la actividad principal cuando se toca la notificación
+
+    // Crear una notificación
+    val notification = NotificationCompat.Builder(context, CHANNEL_ID)
+        .setContentTitle("Nota guardada")
+        .setContentText(message)
+        .setSmallIcon(R.drawable.save)
+        .setAutoCancel(true)
+        .build()
+
+    // Obtener el NotificationManager
+    val notificationManager =
+        context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+    // Notificación de publicación
+    notificationManager.notify(NOTIFICATION_ID, notification)
+}
+
+// Declarar constantes para el canal de notificación y el ID de notificación
+private const val CHANNEL_ID = "notes_channel"
+private const val NOTIFICATION_ID = 1

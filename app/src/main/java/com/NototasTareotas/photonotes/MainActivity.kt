@@ -1,13 +1,19 @@
 package com.NototasTareotas.photonotes
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.NototasTareotas.photonotes.MyApp.Companion.CHANNEL_ID
 import com.NototasTareotas.photonotes.ui.EditNote.NoteEditScreen
 import com.NototasTareotas.photonotes.ui.NoteDetail.NoteDetailScreen
 import com.NototasTareotas.photonotes.ui.NotesList.NotesList
@@ -17,14 +23,32 @@ import com.NototasTareotas.photonotes.ui.createNote.CreateNoteScreen
 
 class MainActivity : ComponentActivity() {
 
-    private lateinit var notesViewModel : NotesViewModel
+    private lateinit var notesViewModel: NotesViewModel
 
+
+
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                CHANNEL_ID,
+                "Notificaciones de notas",
+                NotificationManager.IMPORTANCE_DEFAULT
+            ).apply {
+                description = "Canal de notificaciones para notas"
+            }
+
+            val notificationManager =
+                applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        createNotificationChannel()
         // retrieve viewModel
-        notesViewModel =  NotesViewModelFactory(PhotoNotesApp.getDao()).create(NotesViewModel::class.java)
+        notesViewModel =
+            NotesViewModelFactory(PhotoNotesApp.getDao()).create(NotesViewModel::class.java)
 
 
         setContent {
@@ -34,7 +58,12 @@ class MainActivity : ComponentActivity() {
                 startDestination = Constants.NAVIGATION_NOTES_LIST
             ) {
                 // Notes List
-                composable(Constants.NAVIGATION_NOTES_LIST) { NotesList(navController, notesViewModel) }
+                composable(Constants.NAVIGATION_NOTES_LIST) {
+                    NotesList(
+                        navController,
+                        notesViewModel
+                    )
+                }
 
                 // Notes Detail page
                 composable(
@@ -59,10 +88,20 @@ class MainActivity : ComponentActivity() {
                 }
 
                 // Create Note Page
-                composable(Constants.NAVIGATION_NOTES_CREATE) { CreateNoteScreen(navController, notesViewModel) }
+                composable(Constants.NAVIGATION_NOTES_CREATE) {
+                    CreateNoteScreen(
+                        navController,
+                        notesViewModel
+                    )
+                }
 
             }
-
         }
     }
 }
+
+
+
+
+
+
