@@ -32,6 +32,7 @@ import com.NototasTareotas.photonotes.ui.createNote.VideoPlayer
 import com.NototasTareotas.photonotes.ui.theme.PhotoNotesTheme
 
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Refresh
@@ -120,91 +121,106 @@ fun NoteDetailScreen(noteId: Int, navController: NavController, viewModel: Notes
                     )
                 },
             ) {
-                Column(
-                    Modifier
-                        .fillMaxSize()
-
+                LazyColumn(
+                    contentPadding = PaddingValues(12.dp),
+                    modifier = Modifier.fillMaxSize()
                 ) {
 
-                    Spacer(modifier = Modifier.padding(12.dp))
+                    item {
+                        Spacer(modifier = Modifier.padding(12.dp))
+                    }
+
                     // Sección de video
                     if (videoUri != null && videoUri.isNotEmpty()) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(300.dp)
-                        ) {
-                            AndroidView(
-                                factory = { context ->
-                                    PlayerView(context).apply {
-                                        player = videoExoPlayer
-                                        layoutParams = ViewGroup.LayoutParams(
-                                            ViewGroup.LayoutParams.MATCH_PARENT,
-                                            ViewGroup.LayoutParams.MATCH_PARENT
-                                        )
-                                    }
-                                },
-                                modifier = Modifier.fillMaxSize(),
-                            )
+                        item {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(300.dp)
+                            ) {
+                                AndroidView(
+                                    factory = { context ->
+                                        PlayerView(context).apply {
+                                            player = videoExoPlayer
+                                            layoutParams = ViewGroup.LayoutParams(
+                                                ViewGroup.LayoutParams.MATCH_PARENT,
+                                                ViewGroup.LayoutParams.MATCH_PARENT
+                                            )
+                                        }
+                                    },
+                                    modifier = Modifier.fillMaxSize(),
+                                )
+                            }
                         }
                     }
 
-                    Spacer(modifier = Modifier.padding(12.dp))
+                    item {
+                        Spacer(modifier = Modifier.padding(12.dp))
+                    }
 
                     // Sección de audio
                     if (audioUri != null && audioUri.isNotEmpty()) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(100.dp)
-                        ) {
-                            AndroidView(
-                                factory = { context ->
-                                    PlayerView(context).apply {
-                                        player = audioExoPlayer
-                                        layoutParams = ViewGroup.LayoutParams(
-                                            ViewGroup.LayoutParams.MATCH_PARENT,
-                                            ViewGroup.LayoutParams.MATCH_PARENT
-                                        )
-                                    }
-                                },
-                                modifier = Modifier.fillMaxSize(),
+                        item {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(100.dp)
+                            ) {
+                                AndroidView(
+                                    factory = { context ->
+                                        PlayerView(context).apply {
+                                            player = audioExoPlayer
+                                            layoutParams = ViewGroup.LayoutParams(
+                                                ViewGroup.LayoutParams.MATCH_PARENT,
+                                                ViewGroup.LayoutParams.MATCH_PARENT
+                                            )
+                                        }
+                                    },
+                                    modifier = Modifier.fillMaxSize(),
+                                )
+                            }
+                        }
+                    }
+
+                    item {
+                        Spacer(modifier = Modifier.padding(12.dp))
+                    }
+
+                    // Sección de imagen
+                    if (note.value.imageUri != null && note.value.imageUri!!.isNotEmpty()) {
+                        item {
+                            Image(
+                                painter = rememberAsyncImagePainter(
+                                    ImageRequest
+                                        .Builder(LocalContext.current)
+                                        .data(data = Uri.parse(note.value.imageUri))
+                                        .build()
+                                ),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(200.dp) // Ajusta la altura según tus necesidades
+                                    .padding(6.dp),
+                                contentScale = ContentScale.Crop
                             )
                         }
                     }
-                    Spacer(modifier = Modifier.padding(12.dp))
-                    // Sección de imagen
-                    if (note.value.imageUri != null && note.value.imageUri!!.isNotEmpty()) {
-                        Image(
-                            painter = rememberAsyncImagePainter(
-                                ImageRequest
-                                    .Builder(LocalContext.current)
-                                    .data(data = Uri.parse(note.value.imageUri))
-                                    .build()
-                            ),
-                            contentDescription = null,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(200.dp) // Ajusta la altura según tus necesidades
-                                .padding(6.dp),
-                            contentScale = ContentScale.Crop
-                        )
-                    }
 
-                    // Resto de tu contenido
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(12.dp)
-                    ) {
-                        Text(
-                            text = note.value.title,
-                            fontSize = 36.sp,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(bottom = 8.dp)
-                        )
-                        Text(text = note.value.dateUpdated, color = Color.Gray, modifier = Modifier.padding(bottom = 8.dp))
-                        Text(text = note.value.note)
+                    item {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(12.dp)
+                        ) {
+                            Text(
+                                text = note.value.title,
+                                fontSize = 36.sp,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(bottom = 8.dp)
+                            )
+                            Text(text = note.value.dateUpdated, color = Color.Gray, modifier = Modifier.padding(bottom = 8.dp))
+                            Text(text = note.value.note)
+                        }
                     }
                 }
             }

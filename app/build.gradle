@@ -76,5 +76,8 @@ dependencies {
     kapt "androidx.room:room-compiler:2.4.3"
 
 
+// mapas
+    implementation("org.osmdroid:osmdroid-android:6.1.17")
+    implementation("tech.utsmankece:osm-android-compose:0.0.5")
 
 }
