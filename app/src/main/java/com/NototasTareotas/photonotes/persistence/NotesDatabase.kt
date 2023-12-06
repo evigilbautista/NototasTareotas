@@ -9,5 +9,4 @@ import com.NototasTareotas.photonotes.model.Note
   Note::class], version = 2)
 abstract class NotesDatabase : RoomDatabase() {
     abstract fun NotesDao(): NotesDao
-
 }

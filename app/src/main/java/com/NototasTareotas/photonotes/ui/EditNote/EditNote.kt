@@ -33,6 +33,7 @@ import com.NototasTareotas.photonotes.ui.theme.PhotoNotesTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun NoteEditScreen(noteId: Int, navController: NavController, viewModel: NotesViewModel) {
@@ -96,7 +97,6 @@ fun NoteEditScreen(noteId: Int, navController: NavController, viewModel: NotesVi
     }
 
     PhotoNotesTheme {
-        // A surface container using the 'background' color from the theme
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.primary) {
             Scaffold(
                 topBar = {
@@ -115,9 +115,10 @@ fun NoteEditScreen(noteId: Int, navController: NavController, viewModel: NotesVi
                                     id = note.value.id,
                                     note = currentNote.value,
                                     title = currentTitle.value,
-                                    imageUri = currentPhotos.value,
-                                    videoUri = currentVideo.value,
-                                    audioUri = currentAudio.value
+                                    imageUri = currentPhotos.value.orEmpty(),
+                                    videoUri = currentVideo.value.orEmpty(),
+                                    audioUri = currentAudio.value.orEmpty(),
+                                    tipo = 1
                                 )
                             )
                             navController.popBackStack()

@@ -20,6 +20,7 @@ data class Note(
     @ColumnInfo(name = "imageUri") val imageUri: String? = null,
     @ColumnInfo(name = "VideoUri") val videoUri: String? = null,
     @ColumnInfo(name = "AudioUri") val audioUri: String? = null,
+    @ColumnInfo(name="tipo") val tipo: Int
 )
 
 // Función auxiliar para obtener la fecha y hora actual formateada

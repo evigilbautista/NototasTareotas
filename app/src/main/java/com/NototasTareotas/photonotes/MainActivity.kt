@@ -19,13 +19,12 @@ import com.NototasTareotas.photonotes.ui.NoteDetail.NoteDetailScreen
 import com.NototasTareotas.photonotes.ui.NotesList.NotesList
 import com.NototasTareotas.photonotes.ui.NotesViewModel
 import com.NototasTareotas.photonotes.ui.NotesViewModelFactory
+import com.NototasTareotas.photonotes.ui.createNote.CreateHWScreen
 import com.NototasTareotas.photonotes.ui.createNote.CreateNoteScreen
 
 class MainActivity : ComponentActivity() {
 
     private lateinit var notesViewModel: NotesViewModel
-
-
 
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -65,7 +64,7 @@ class MainActivity : ComponentActivity() {
                     )
                 }
 
-                // Notes Detail page
+                // Notes Detail
                 composable(
                     Constants.NAVIGATION_NOTE_DETAIL,
                     arguments = listOf(navArgument(Constants.NAVIGATION_NOTE_ID_Argument) {
@@ -76,7 +75,7 @@ class MainActivity : ComponentActivity() {
                         ?.let { NoteDetailScreen(noteId = it, navController, notesViewModel) }
                 }
 
-                // Notes Edit page
+                // Notes Edit
                 composable(
                     Constants.NAVIGATION_NOTE_EDIT,
                     arguments = listOf(navArgument(Constants.NAVIGATION_NOTE_ID_Argument) {
@@ -87,7 +86,7 @@ class MainActivity : ComponentActivity() {
                         ?.let { NoteEditScreen(noteId = it, navController, notesViewModel) }
                 }
 
-                // Create Note Page
+                // Create Note
                 composable(Constants.NAVIGATION_NOTES_CREATE) {
                     CreateNoteScreen(
                         navController,
@@ -95,13 +94,13 @@ class MainActivity : ComponentActivity() {
                     )
                 }
 
+                // Create Homework
+                composable(Constants.NAVIGATION_HW_CREATE){
+                    CreateHWScreen(
+                        navController,
+                        notesViewModel)
+                }
             }
         }
     }
 }
-
-
-
-
-
-
