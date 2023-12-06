@@ -2,6 +2,7 @@
     <string name="app_name">Notas y Tareas</string>
     <string name="create_note">Crear Nota</string>
     <string name="add_photo">Agregar foto</string>
+    <string name="add_ubicacion">agregar ubicacion</string>
     <string name="photo_notes">Notas y Tareas</string>
     <string name="delete_note">Borrar Notas</string>
     <string name="edit_note">Editar Nota</string>
