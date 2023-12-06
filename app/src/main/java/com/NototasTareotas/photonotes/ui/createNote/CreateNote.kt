@@ -54,6 +54,7 @@ import com.NototasTareotas.photonotes.ui.theme.PhotoNotesTheme
 import com.NototasTareotas.photonotes.R
 
 
+
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun CreateNoteScreen(
@@ -134,13 +135,50 @@ val notif = LocalContext.current
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp)
                     ) {
+                        var isChoosingImageDialogVisible by remember { mutableStateOf(false) }
+
                         NotesFab(
                             contentDescription = stringResource(R.string.add_image),
                             action = {
-                                getImageRequest.launch(arrayOf("image/*"))
+                                isChoosingImageDialogVisible = true
                             },
                             icon = R.drawable.camera
                         )
+
+                        if (isChoosingImageDialogVisible) {
+                            AlertDialog(
+                                onDismissRequest = {
+                                    isChoosingImageDialogVisible = false
+                                },
+                                title = {
+                                    Text(text = "Seleccionar Fuente de Imagen")
+                                },
+                                text = {
+                                    Text(text = "Elija una opción para agregar una imagen.")
+                                },
+                                confirmButton = {
+                                    Button(
+                                        onClick = {
+                                            navController.navigate("MainScreen")
+                                            isChoosingImageDialogVisible = false
+                                        }
+                                    ) {
+                                        Text("Tomar foto")
+                                    }
+                                },
+                                dismissButton = {
+                                    Button(
+                                        onClick = {
+
+
+                                            isChoosingImageDialogVisible = false
+                                        }
+                                    ) {
+                                        Text("Seleccionar desde almacenamiento")
+                                    }
+                                }
+                            )
+                        }
 
                         NotesFab(
                             contentDescription = stringResource(R.string.add_audio),
@@ -173,7 +211,6 @@ val notif = LocalContext.current
                             }
                         )
 
-                        // Mostrar el diálogo del mapa si isMapDialogVisible es true
                         if (isMapDialogVisible) {
                             AlertDialog(
                                 onDismissRequest = {
@@ -199,8 +236,6 @@ val notif = LocalContext.current
                                 }
                             )
                         }
-
-
 
                     }
 
@@ -397,3 +432,7 @@ private fun showNotification(context: Context, message: String) {
 // Declarar constantes para el canal de notificación y el ID de notificación
 private const val CHANNEL_ID = "notes_channel"
 private const val NOTIFICATION_ID = 1
+
+
+
+

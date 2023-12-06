@@ -7,6 +7,10 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -20,10 +24,13 @@ import com.NototasTareotas.photonotes.ui.NotesList.NotesList
 import com.NototasTareotas.photonotes.ui.NotesViewModel
 import com.NototasTareotas.photonotes.ui.NotesViewModelFactory
 import com.NototasTareotas.photonotes.ui.createNote.CreateNoteScreen
+import com.NototasTareotas.photonotes.ui.theme.PhotoNotesTheme
 
 class MainActivity : ComponentActivity() {
 
     private lateinit var notesViewModel: NotesViewModel
+
+
 
 
 
@@ -43,6 +50,9 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         createNotificationChannel()
@@ -52,7 +62,10 @@ class MainActivity : ComponentActivity() {
 
 
         setContent {
-            val navController = rememberNavController()
+
+
+
+                val navController = rememberNavController()
             NavHost(
                 navController = navController,
                 startDestination = Constants.NAVIGATION_NOTES_LIST
@@ -64,6 +77,8 @@ class MainActivity : ComponentActivity() {
                         notesViewModel
                     )
                 }
+
+
 
                 // Notes Detail page
                 composable(
