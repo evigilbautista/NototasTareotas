@@ -18,14 +18,17 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.currentCompositionLocalContext
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -57,6 +60,7 @@ fun CreateNoteScreen(
     navController: NavController,
     viewModel: NotesViewModel
 ) {
+
     val currentNote = remember { mutableStateOf("") }
     val currentTitle = remember { mutableStateOf("") }
     val currentPhotos = remember { mutableStateOf("") }
@@ -92,6 +96,7 @@ val notif = LocalContext.current
         }
         currentAudio.value = it.toString()
     }
+
 
     PhotoNotesTheme {
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.secondary) {
@@ -152,7 +157,53 @@ val notif = LocalContext.current
                             },
                             icon = R.drawable.video
                         )
+                        // Botón para abrir el mapa
+                        var isMapDialogVisible by remember { mutableStateOf(false) }
+
+                        FloatingActionButton(
+                            onClick = {
+                                isMapDialogVisible = true
+                            },
+                            content = {
+                                Icon(
+                                    imageVector = Icons.Default.LocationOn,
+                                    contentDescription = stringResource(R.string.add_ubicacion),
+                                    tint = Color.Black
+                                )
+                            }
+                        )
+
+                        // Mostrar el diálogo del mapa si isMapDialogVisible es true
+                        if (isMapDialogVisible) {
+                            AlertDialog(
+                                onDismissRequest = {
+                                    isMapDialogVisible = false
+                                },
+                                text = {
+                                    // Contenido del diálogo
+                                    OSMComposeMapa(
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .background(Color.White)
+                                    )
+                                },
+                                confirmButton = {
+                                    // Botón de confirmación, puedes cambiar o quitar según tus necesidades
+                                    Button(
+                                        onClick = {
+                                            isMapDialogVisible = false
+                                        }
+                                    ) {
+                                        Text("Cerrar")
+                                    }
+                                }
+                            )
+                        }
+
+
+
                     }
+
                 },
                 content = {
                     Column(
