@@ -1,5 +1,4 @@
 package com.NototasTareotas.photonotes.ui.createNote
-
 import android.annotation.SuppressLint
 import android.app.NotificationManager
 import android.content.Context
@@ -45,7 +44,10 @@ import com.NototasTareotas.photonotes.ui.GenericAppBar
 import com.NototasTareotas.photonotes.ui.NotesList.NotesFab
 import com.NototasTareotas.photonotes.ui.NotesViewModel
 import com.NototasTareotas.photonotes.ui.theme.PhotoNotesTheme
+<<<<<<< HEAD
 
+=======
+>>>>>>> 627598d96c0c02b77d1ad4fa5c1215a22d4acb6c
 
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -118,7 +120,7 @@ fun CreateNoteScreen(
 
                             showNotification(notif, "Nota guardada")
                             navController.popBackStack()
-                                      },
+                        },
                         iconState = saveButtonState
                     )
                 },
@@ -175,7 +177,6 @@ fun CreateNoteScreen(
                                     isMapDialogVisible = false
                                 },
                                 text = {
-                                    // Contenido del diálogo
                                     OSMComposeMapa(
                                         modifier = Modifier
                                             .fillMaxSize()
@@ -183,7 +184,6 @@ fun CreateNoteScreen(
                                     )
                                 },
                                 confirmButton = {
-                                    // Botón de confirmación, puedes cambiar o quitar según tus necesidades
                                     Button(
                                         onClick = {
                                             isMapDialogVisible = false
@@ -369,9 +369,7 @@ fun AudioPlayer(audioUrl: String) {
 }
 
 private fun showNotification(context: Context, message: String) {
-    // Crear un intent para abrir la actividad principal cuando se toca la notificación
 
-    // Crear una notificación
     val notification = NotificationCompat.Builder(context, CHANNEL_ID)
         .setContentTitle("Nota guardada")
         .setContentText(message)
@@ -573,5 +571,9 @@ fun CreateHWScreen(
             )
         }
     }
+<<<<<<< HEAD
 }
 
+=======
+}
+>>>>>>> 627598d96c0c02b77d1ad4fa5c1215a22d4acb6c

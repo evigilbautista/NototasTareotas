@@ -16,7 +16,7 @@ fun GenericAppBar(
 ) {
     TopAppBar(
         title = { Text(title) },
-        backgroundColor = MaterialTheme.colors.secondary,
+        backgroundColor = MaterialTheme.colors.secondaryVariant,
         actions = {
             IconButton(
                 onClick = {
