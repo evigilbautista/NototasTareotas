@@ -40,11 +40,11 @@ import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.NototasTareotas.photonotes.PhotoNotesApp
+import com.NototasTareotas.photonotes.R
 import com.NototasTareotas.photonotes.ui.GenericAppBar
 import com.NototasTareotas.photonotes.ui.NotesList.NotesFab
 import com.NototasTareotas.photonotes.ui.NotesViewModel
 import com.NototasTareotas.photonotes.ui.theme.PhotoNotesTheme
-import com.NototasTareotas.photonotes.R
 
 
 
@@ -130,51 +130,14 @@ fun CreateNoteScreen(
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp)
                     ) {
-                        var isChoosingImageDialogVisible by remember { mutableStateOf(false) }
-
+                        CameraButtonExample()
                         NotesFab(
                             contentDescription = stringResource(R.string.add_image),
                             action = {
-                                isChoosingImageDialogVisible = true
+                                getImageRequest.launch(arrayOf("image/*"))
                             },
                             icon = R.drawable.camera
                         )
-
-                        if (isChoosingImageDialogVisible) {
-                            AlertDialog(
-                                onDismissRequest = {
-                                    isChoosingImageDialogVisible = false
-                                },
-                                title = {
-                                    Text(text = "Seleccionar Fuente de Imagen")
-                                },
-                                text = {
-                                    Text(text = "Elija una opción para agregar una imagen.")
-                                },
-                                confirmButton = {
-                                    Button(
-                                        onClick = {
-                                            navController.navigate("MainScreen")
-                                            isChoosingImageDialogVisible = false
-                                        }
-                                    ) {
-                                        Text("Tomar foto")
-                                    }
-                                },
-                                dismissButton = {
-                                    Button(
-                                        onClick = {
-
-
-                                            isChoosingImageDialogVisible = false
-                                        }
-                                    ) {
-                                        Text("Seleccionar desde almacenamiento")
-                                    }
-                                }
-                            )
-                        }
-
                         NotesFab(
                             contentDescription = stringResource(R.string.add_audio),
                             action = {
@@ -426,7 +389,7 @@ private fun showNotification(context: Context, message: String) {
 
 // Declarar constantes para el canal de notificación y el ID de notificación
 private const val CHANNEL_ID = "notes_channel"
-private const val NOTIFICATION_ID = 1
+private const val NOTIFICATION_ID = 2
 
 
 
@@ -510,6 +473,8 @@ fun CreateHWScreen(
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp)
                     ) {
+                        CameraButtonExample()
+
                         NotesFab(
                             contentDescription = stringResource(R.string.add_image),
                             action = {
