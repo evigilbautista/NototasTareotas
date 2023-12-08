@@ -7,7 +7,6 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -48,7 +47,6 @@ class MainActivity : ComponentActivity() {
         // retrieve viewModel
         notesViewModel =
             NotesViewModelFactory(PhotoNotesApp.getDao()).create(NotesViewModel::class.java)
-
 
         setContent {
             val navController = rememberNavController()

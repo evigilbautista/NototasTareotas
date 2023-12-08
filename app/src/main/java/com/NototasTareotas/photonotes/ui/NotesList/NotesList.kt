@@ -40,8 +40,8 @@ import com.NototasTareotas.photonotes.model.getDay
 import com.NototasTareotas.photonotes.ui.GenericAppBar
 import com.NototasTareotas.photonotes.ui.NotesViewModel
 import com.NototasTareotas.photonotes.ui.theme.PhotoNotesTheme
-import com.NototasTareotas.photonotes.ui.theme.noteBGBlue
-import com.NototasTareotas.photonotes.ui.theme.noteBGYellow
+import com.NototasTareotas.photonotes.ui.theme.noteVerdeB
+import com.NototasTareotas.photonotes.ui.theme.noteVerdeF
 
 // LISTA DE NOTAAS
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -66,8 +66,12 @@ fun NotesList(navController: NavController, viewModel: NotesViewModel) {
             text = {
                 Column {
                     Button(
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = noteVerdeB,
+                            contentColor = Color.Black
+                        ),
                         onClick = {
-                            // Navegar a la creación de nota
+                            // nota
                             navController.navigate(Constants.NAVIGATION_NOTES_CREATE)
                             showDialog.value = false
                         },
@@ -78,6 +82,10 @@ fun NotesList(navController: NavController, viewModel: NotesViewModel) {
                         Text("Agregar nota")
                     }
                     Button(
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = noteVerdeB,
+                            contentColor = Color.Black
+                        ),
                         onClick = {
                             navController.navigate(Constants.NAVIGATION_HW_CREATE)
                             showDialog.value = false
@@ -97,7 +105,7 @@ fun NotesList(navController: NavController, viewModel: NotesViewModel) {
 
 
     PhotoNotesTheme {
-        Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.primary) {
+        Surface(modifier = Modifier.fillMaxSize()) {
             Scaffold(
                 topBar = {
                     GenericAppBar(
@@ -251,8 +259,8 @@ fun NotesList(
                 navController,
                 notesToDelete = notesToDelete,
                 noteBackGround = if (index % 2 == 0) {
-                    noteBGYellow
-                } else noteBGBlue
+                    noteVerdeB
+                } else noteVerdeF
             )
             Spacer(
                 modifier = Modifier
@@ -344,7 +352,7 @@ fun NoteListItem(
 fun NotesFab(contentDescription: String, icon: Int, action: () -> Unit) {
     return FloatingActionButton(
         onClick = { action.invoke() },
-        backgroundColor = MaterialTheme.colors.primary
+        backgroundColor = MaterialTheme.colors.secondary
     ) {
         Icon(
             ImageVector.vectorResource(id = icon),
@@ -383,8 +391,8 @@ fun DeleteDialog(
                         Button(
                             modifier = Modifier.fillMaxWidth(),
                             colors = ButtonDefaults.buttonColors(
-                                backgroundColor = Color.Black,
-                                contentColor = Color.White
+                                backgroundColor = noteVerdeB,
+                                contentColor = Color.Black
                             ),
                             onClick = {
                                 action.invoke()
@@ -398,8 +406,8 @@ fun DeleteDialog(
                         Button(
                             modifier = Modifier.fillMaxWidth(),
                             colors = ButtonDefaults.buttonColors(
-                                backgroundColor = Color.Black,
-                                contentColor = Color.White
+                                backgroundColor = noteVerdeB,
+                                contentColor = Color.Black
                             ),
                             onClick = {
                                 openDialog.value = false

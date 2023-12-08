@@ -1,5 +1,4 @@
 package com.NototasTareotas.photonotes.ui.createNote
-
 import android.annotation.SuppressLint
 import android.app.NotificationManager
 import android.content.Context
@@ -40,11 +39,11 @@ import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.NototasTareotas.photonotes.PhotoNotesApp
+import com.NototasTareotas.photonotes.R
 import com.NototasTareotas.photonotes.ui.GenericAppBar
 import com.NototasTareotas.photonotes.ui.NotesList.NotesFab
 import com.NototasTareotas.photonotes.ui.NotesViewModel
 import com.NototasTareotas.photonotes.ui.theme.PhotoNotesTheme
-import com.NototasTareotas.photonotes.R
 
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -117,7 +116,7 @@ fun CreateNoteScreen(
 
                             showNotification(notif, "Nota guardada")
                             navController.popBackStack()
-                                      },
+                        },
                         iconState = saveButtonState
                     )
                 },
@@ -168,14 +167,12 @@ fun CreateNoteScreen(
                             }
                         )
 
-                        // Mostrar el diálogo del mapa si isMapDialogVisible es true
                         if (isMapDialogVisible) {
                             AlertDialog(
                                 onDismissRequest = {
                                     isMapDialogVisible = false
                                 },
                                 text = {
-                                    // Contenido del diálogo
                                     OSMComposeMapa(
                                         modifier = Modifier
                                             .fillMaxSize()
@@ -183,7 +180,6 @@ fun CreateNoteScreen(
                                     )
                                 },
                                 confirmButton = {
-                                    // Botón de confirmación, puedes cambiar o quitar según tus necesidades
                                     Button(
                                         onClick = {
                                             isMapDialogVisible = false
@@ -371,9 +367,7 @@ fun AudioPlayer(audioUrl: String) {
 }
 
 private fun showNotification(context: Context, message: String) {
-    // Crear un intent para abrir la actividad principal cuando se toca la notificación
 
-    // Crear una notificación
     val notification = NotificationCompat.Builder(context, CHANNEL_ID)
         .setContentTitle("Nota guardada")
         .setContentText(message)
