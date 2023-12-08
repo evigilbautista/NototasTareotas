@@ -2,14 +2,11 @@ package com.NototasTareotas.photonotes.ui.createNote
 
 import android.annotation.SuppressLint
 import android.app.NotificationManager
-import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
 import android.media.MediaPlayer
 import android.net.Uri
 import android.view.ViewGroup
 import android.widget.MediaController
-import android.widget.Toast
 import android.widget.VideoView
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -23,9 +20,7 @@ import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.currentCompositionLocalContext
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -41,11 +36,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.app.NotificationCompat
-import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
-import com.NototasTareotas.photonotes.MainActivity
 import com.NototasTareotas.photonotes.PhotoNotesApp
 import com.NototasTareotas.photonotes.ui.GenericAppBar
 import com.NototasTareotas.photonotes.ui.NotesList.NotesFab
@@ -67,8 +60,9 @@ fun CreateNoteScreen(
     val currentPhotos = remember { mutableStateOf("") }
     val currentVideo = remember { mutableStateOf("") }
     val currentAudio = remember { mutableStateOf("") }
+    val currentTipo = remember {mutableStateOf(1)}
     val saveButtonState = remember { mutableStateOf(false) }
-val notif = LocalContext.current
+    val notif = LocalContext.current
 
 
     val getImageRequest = rememberLauncherForActivityResult(
@@ -118,7 +112,8 @@ val notif = LocalContext.current
                                 currentNote.value,
                                 currentPhotos.value,
                                 currentVideo.value,
-                                currentAudio.value
+                                currentAudio.value,
+                                currentTipo.value,
                             )
 
                             showNotification(notif, "Nota guardada")
@@ -435,4 +430,183 @@ private const val NOTIFICATION_ID = 1
 
 
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
+@Composable
+fun CreateHWScreen(
+    navController: NavController,
+    viewModel: NotesViewModel
+) {
+    val currentNote = remember { mutableStateOf("") }
+    val currentTitle = remember { mutableStateOf("") }
+    val currentPhotos = remember { mutableStateOf("") }
+    val currentVideo = remember { mutableStateOf("") }
+    val currentAudio = remember { mutableStateOf("") }
+    val currentTipo = remember {mutableStateOf(1)}
+    val saveButtonState = remember { mutableStateOf(false) }
+    val notif = LocalContext.current
+
+
+    val getImageRequest = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenDocument()
+    ) {
+        if (it != null) {
+            PhotoNotesApp.getUriPermission(it)
+        }
+        currentPhotos.value = it.toString()
+    }
+
+    val getVideoRequest = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenDocument()
+    ) {
+        if (it != null) {
+            PhotoNotesApp.getUriPermission(it)
+        }
+        currentVideo.value = it.toString()
+    }
+
+    val getAudioRequest = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenDocument()
+    ) {
+        if (it != null) {
+            PhotoNotesApp.getUriPermission(it)
+        }
+        currentAudio.value = it.toString()
+    }
+
+    PhotoNotesTheme {
+        Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.secondary) {
+            Scaffold(
+                topBar = {
+                    GenericAppBar(
+                        title = "Crear Tarea",
+                        icon = {
+                            Icon(
+                                imageVector = ImageVector.vectorResource(R.drawable.save),
+                                contentDescription = stringResource(R.string.save_note),
+                                tint = Color.Black,
+                            )
+                        },
+                        onIconClick = {
+                            viewModel.createNote(
+                                currentTitle.value,
+                                currentNote.value,
+                                currentPhotos.value,
+                                currentVideo.value,
+                                currentAudio.value,
+                                currentTipo.value,
+                            )
+
+                            showNotification(notif, "Nota guardada")
+                            navController.popBackStack()
+                        },
+                        iconState = saveButtonState
+                    )
+                },
+                floatingActionButton = {
+                    Row(
+                        verticalAlignment = Alignment.Bottom,
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                    ) {
+                        NotesFab(
+                            contentDescription = stringResource(R.string.add_image),
+                            action = {
+                                getImageRequest.launch(arrayOf("image/*"))
+                            },
+                            icon = R.drawable.camera
+                        )
+
+                        NotesFab(
+                            contentDescription = stringResource(R.string.add_audio),
+                            action = {
+                                getAudioRequest.launch(arrayOf("audio/*"))
+                            },
+                            icon = R.drawable.audio
+                        )
+
+                        NotesFab(
+                            contentDescription = stringResource(R.string.add_video),
+                            action = {
+                                getVideoRequest.launch(arrayOf("video/*"))
+                            },
+                            icon = R.drawable.video
+                        )
+                    }
+                },
+                content = {
+                    Column(
+                        Modifier
+                            .padding(12.dp)
+                            .fillMaxSize()
+
+                    ) {
+                        if (currentPhotos.value.isNotEmpty()) {
+                            Image(
+                                painter = rememberAsyncImagePainter(
+                                    ImageRequest
+                                        .Builder(LocalContext.current)
+                                        .data(data = Uri.parse(currentPhotos.value))
+                                        .build()
+                                ),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .fillMaxHeight(0.3f)
+                                    .padding(6.dp),
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+
+                        if (currentAudio.value.isNotEmpty()) {
+                            AudioPlayer(audioUrl = currentAudio.value)
+                        }
+
+                        if (currentVideo.value.isNotEmpty()) {
+                            VideoPlayer(videoUrl = currentVideo.value)
+                        }
+
+                        Spacer(modifier = Modifier.padding(12.dp))
+
+                        TextField(
+                            value = currentTitle.value,
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = TextFieldDefaults.textFieldColors(
+                                cursorColor = Color.Black,
+                                focusedLabelColor = Color.Black,
+                            ),
+                            onValueChange = { value ->
+                                currentTitle.value = value
+                                saveButtonState.value =
+                                    currentTitle.value != "" && currentNote.value != ""
+                            },
+                            label = { Text(text = "Titulo") }
+                        )
+
+                        Spacer(modifier = Modifier.padding(12.dp))
+
+                        TextField(
+                            value = currentNote.value,
+                            colors = TextFieldDefaults.textFieldColors(
+                                cursorColor = Color.Black,
+                                focusedLabelColor = Color.Black,
+                            ),
+                            modifier = Modifier
+                                .fillMaxHeight(0.5f)
+                                .fillMaxWidth(),
+                            onValueChange = { value ->
+                                currentNote.value = value
+                                saveButtonState.value =
+                                    currentTitle.value != "" && currentNote.value != ""
+                            },
+                            label = { Text(text = "Contenido") }
+                        )
+                        Spacer(modifier = Modifier.padding(12.dp))
+                        // Seccion de recordatorio
+                    }
+                }
+            )
+        }
+    }
+}
 

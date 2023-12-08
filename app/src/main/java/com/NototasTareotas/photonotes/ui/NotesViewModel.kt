@@ -1,14 +1,6 @@
 package com.NototasTareotas.photonotes.ui
 
-import android.app.NotificationManager
-import android.content.Context
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.core.app.NotificationCompat
 import androidx.lifecycle.*
-import com.NototasTareotas.photonotes.MyApp
-import com.NototasTareotas.photonotes.R
 import com.NototasTareotas.photonotes.model.Note
 import com.NototasTareotas.photonotes.persistence.NotesDao
 import kotlinx.coroutines.Dispatchers
@@ -16,9 +8,6 @@ import kotlinx.coroutines.launch
 
 // ViewModel que maneja la lógica de negocio relacionada con las notas
 class NotesViewModel(private val db: NotesDao, ) : ViewModel() {
-
-
-
 
     // LiveData que contiene la lista de notas, actualizado automáticamente por Room
     val notes: LiveData<List<Note>> = db.getNotes()
@@ -29,7 +18,6 @@ class NotesViewModel(private val db: NotesDao, ) : ViewModel() {
             db.deleteNote(note)
         }
     }
-
 
     // Función para actualizar una nota
     fun updateNote(note: Note) {
@@ -44,12 +32,13 @@ class NotesViewModel(private val db: NotesDao, ) : ViewModel() {
         note: String,
         image: String? = null,
         video: String? = null,
-        audio: String? = null
+        audio: String? = null,
+        tipo: Int
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             // Insertar una nueva nota en la base de datos
             //.insertNote(Note(title = title, note = note, imageUri = image))
-            db.insertNote(Note(id = 0, title = title, note = note, imageUri = image, videoUri = video, audioUri = audio))
+            db.insertNote(Note(id = 0, title = title, note = note, imageUri = image, videoUri = video, audioUri = audio, tipo = 2))
         }
     }
 

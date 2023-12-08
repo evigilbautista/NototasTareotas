@@ -101,7 +101,6 @@ fun NoteDetailScreen(noteId: Int, navController: NavController, viewModel: Notes
     }
 
     PhotoNotesTheme {
-        // A surface container using the 'background' color from the theme
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
             Scaffold(
                 topBar = {
@@ -125,35 +124,82 @@ fun NoteDetailScreen(noteId: Int, navController: NavController, viewModel: Notes
                     contentPadding = PaddingValues(12.dp),
                     modifier = Modifier.fillMaxSize()
                 ) {
-
+                    item {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(12.dp)
+                        ) {
+                            Text(
+                                text = note.value.title,
+                                fontSize = 36.sp,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(bottom = 8.dp)
+                            )
+                            Text(text = note.value.dateUpdated, color = Color.Gray, modifier = Modifier.padding(bottom = 8.dp))
+                            Text(text = note.value.note)
+                        }
+                    }
                     item {
                         Spacer(modifier = Modifier.padding(12.dp))
                     }
 
-                    // Sección de video
-                    if (videoUri != null && videoUri.isNotEmpty()) {
+
+                    // Video e imagen en la misma fila
+                    if ((videoUri != null && videoUri.isNotEmpty()) || (note.value.imageUri != null && note.value.imageUri!!.isNotEmpty())) {
                         item {
-                            Box(
+                            Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .height(300.dp)
+                                    .height(200.dp)
                             ) {
-                                AndroidView(
-                                    factory = { context ->
-                                        PlayerView(context).apply {
-                                            player = videoExoPlayer
-                                            layoutParams = ViewGroup.LayoutParams(
-                                                ViewGroup.LayoutParams.MATCH_PARENT,
-                                                ViewGroup.LayoutParams.MATCH_PARENT
-                                            )
-                                        }
-                                    },
-                                    modifier = Modifier.fillMaxSize(),
-                                )
+                                //Video
+                                if (videoUri != null && videoUri.isNotEmpty()) {
+                                    Box(
+                                        modifier = Modifier
+                                            .weight(1f)
+                                            .height(200.dp)
+                                    ) {
+                                        AndroidView(
+                                            factory = { context ->
+                                                PlayerView(context).apply {
+                                                    player = videoExoPlayer
+                                                    layoutParams = ViewGroup.LayoutParams(
+                                                        ViewGroup.LayoutParams.MATCH_PARENT,
+                                                        ViewGroup.LayoutParams.MATCH_PARENT
+                                                    )
+                                                }
+                                            },
+                                            modifier = Modifier.fillMaxSize(),
+                                        )
+                                    }
+                                }
+
+                                // Imagen
+                                if (note.value.imageUri != null && note.value.imageUri!!.isNotEmpty()) {
+                                    Box(
+                                        modifier = Modifier
+                                            .weight(1f)
+                                            .height(200.dp)
+                                    ) {
+                                        Image(
+                                            painter = rememberAsyncImagePainter(
+                                                ImageRequest
+                                                    .Builder(LocalContext.current)
+                                                    .data(data = Uri.parse(note.value.imageUri))
+                                                    .build()
+                                            ),
+                                            contentDescription = null,
+                                            modifier = Modifier
+                                                .fillMaxSize()
+                                                .padding(6.dp),
+                                            contentScale = ContentScale.Crop
+                                        )
+                                    }
+                                }
                             }
                         }
                     }
-
                     item {
                         Spacer(modifier = Modifier.padding(12.dp))
                     }
@@ -179,47 +225,6 @@ fun NoteDetailScreen(noteId: Int, navController: NavController, viewModel: Notes
                                     modifier = Modifier.fillMaxSize(),
                                 )
                             }
-                        }
-                    }
-
-                    item {
-                        Spacer(modifier = Modifier.padding(12.dp))
-                    }
-
-                    // Sección de imagen
-                    if (note.value.imageUri != null && note.value.imageUri!!.isNotEmpty()) {
-                        item {
-                            Image(
-                                painter = rememberAsyncImagePainter(
-                                    ImageRequest
-                                        .Builder(LocalContext.current)
-                                        .data(data = Uri.parse(note.value.imageUri))
-                                        .build()
-                                ),
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(200.dp) // Ajusta la altura según tus necesidades
-                                    .padding(6.dp),
-                                contentScale = ContentScale.Crop
-                            )
-                        }
-                    }
-
-                    item {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(12.dp)
-                        ) {
-                            Text(
-                                text = note.value.title,
-                                fontSize = 36.sp,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier.padding(bottom = 8.dp)
-                            )
-                            Text(text = note.value.dateUpdated, color = Color.Gray, modifier = Modifier.padding(bottom = 8.dp))
-                            Text(text = note.value.note)
                         }
                     }
                 }

@@ -43,8 +43,7 @@ import com.NototasTareotas.photonotes.ui.theme.PhotoNotesTheme
 import com.NototasTareotas.photonotes.ui.theme.noteBGBlue
 import com.NototasTareotas.photonotes.ui.theme.noteBGYellow
 
-
-
+// LISTA DE NOTAAS
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun NotesList(navController: NavController, viewModel: NotesViewModel) {
@@ -54,8 +53,50 @@ fun NotesList(navController: NavController, viewModel: NotesViewModel) {
     val notesToDelete = remember { mutableStateOf(listOf<Note>()) }
     val notes = viewModel.notes.observeAsState()
     val context = LocalContext.current
+// BOTON PARA ELEGIR QUE AGREGAR
+    val showDialog = remember { mutableStateOf(false) }
+    if (showDialog.value) {
+        AlertDialog(
+            onDismissRequest = {
+                showDialog.value = false
+            },
+            title = {
+                Text(text = "¿Que quieres agregar?")
+            },
+            text = {
+                Column {
+                    Button(
+                        onClick = {
+                            // Navegar a la creación de nota
+                            navController.navigate(Constants.NAVIGATION_NOTES_CREATE)
+                            showDialog.value = false
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp)
+                    ) {
+                        Text("Agregar nota")
+                    }
+                    Button(
+                        onClick = {
+                            navController.navigate(Constants.NAVIGATION_HW_CREATE)
+                            showDialog.value = false
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp)
+                    ) {
+                        Text("Agregar tarea")
+                    }
+                }
+            },
+            buttons = {
+            }
+        )
+    }
+
+
     PhotoNotesTheme {
-        // A surface container using the 'background' color from the theme
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.primary) {
             Scaffold(
                 topBar = {
@@ -64,7 +105,7 @@ fun NotesList(navController: NavController, viewModel: NotesViewModel) {
                         onIconClick = {
                             if (notes.value?.isNotEmpty() == true) {
                                 openDialog.value = true
-                                deleteText.value = "Esta seguro de que quiere eliminar todas las notas ?"
+                                deleteText.value = "¿Está seguro de que quiere eliminar todas las notas?"
                                 notesToDelete.value = notes.value ?: emptyList()
                             } else {
                                 Toast.makeText(context, "No se encontraron notas.", Toast.LENGTH_SHORT)
@@ -81,19 +122,30 @@ fun NotesList(navController: NavController, viewModel: NotesViewModel) {
                             )
                         },
                         iconState = remember { mutableStateOf(true) }
-
                     )
                 },
                 floatingActionButton = {
+                    // Cambia el texto y la acción del botón flotante
                     NotesFab(
                         contentDescription = stringResource(R.string.create_note),
-                        action = { navController.navigate(Constants.NAVIGATION_NOTES_CREATE) },
+                        action = {
+                            showDialog.value = true
+                        },
                         icon = R.drawable.note_add_icon
                     )
                 }
-
             ) {
                 Column() {
+                    Button(
+                        onClick = {
+
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
+                    ) {
+                        Text("VER TAREAS")
+                    }
                     SearchBar(notesQuery)
                     NotesList(
                         notes = notes.value.orPlaceHolderList(),
@@ -115,11 +167,11 @@ fun NotesList(navController: NavController, viewModel: NotesViewModel) {
                         }
                     })
             }
-
         }
     }
 }
 
+// BARRA DE BUSQUEDA
 @Composable
 fun SearchBar(query: MutableState<String>) {
     Column(Modifier.padding(top = 12.dp, start = 12.dp, end = 12.dp, bottom = 0.dp)) {
@@ -192,7 +244,6 @@ fun NotesList(
                 previousHeader =  note.getDay()
             }
 
-
             NoteListItem(
                 note,
                 openDialog,
@@ -223,14 +274,16 @@ fun NoteListItem(
     notesToDelete: MutableState<List<Note>>
 ) {
 
-    return Box(modifier = Modifier.height(120.dp).clip(RoundedCornerShape(12.dp))) {
+    return Box(modifier = Modifier
+        .height(120.dp)
+        .clip(RoundedCornerShape(12.dp))) {
         Column(
             modifier = Modifier
                 .background(noteBackGround)
                 .fillMaxWidth()
                 .height(120.dp)
                 .combinedClickable(interactionSource = remember { MutableInteractionSource() },
-                    indication = rememberRipple(bounded = false), // You can also change the color and radius of the ripple
+                    indication = rememberRipple(bounded = false),
                     onClick = {
                         if (note.id != 0) {
                             navController.navigate(Constants.noteDetailNavigation(note.id ?: 0))
@@ -248,7 +301,6 @@ fun NoteListItem(
         ) {
             Row(){
                 if (note.imageUri != null && note.imageUri.isNotEmpty()){
-                    // load firs image into view
                     Image(
                         painter = rememberAsyncImagePainter(
                             ImageRequest
@@ -299,7 +351,6 @@ fun NotesFab(contentDescription: String, icon: Int, action: () -> Unit) {
             contentDescription = contentDescription,
             tint = Color.Black
         )
-
     }
 }
 
