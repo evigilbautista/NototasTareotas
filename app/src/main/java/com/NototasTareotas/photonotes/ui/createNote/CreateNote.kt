@@ -44,10 +44,7 @@ import com.NototasTareotas.photonotes.ui.GenericAppBar
 import com.NototasTareotas.photonotes.ui.NotesList.NotesFab
 import com.NototasTareotas.photonotes.ui.NotesViewModel
 import com.NototasTareotas.photonotes.ui.theme.PhotoNotesTheme
-<<<<<<< HEAD
 
-=======
->>>>>>> 627598d96c0c02b77d1ad4fa5c1215a22d4acb6c
 
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -402,7 +399,7 @@ fun CreateHWScreen(
     val currentPhotos = remember { mutableStateOf("") }
     val currentVideo = remember { mutableStateOf("") }
     val currentAudio = remember { mutableStateOf("") }
-    val currentTipo = remember {mutableStateOf(1)}
+    val currentTipo = remember { mutableStateOf(1) }
     val saveButtonState = remember { mutableStateOf(false) }
     val notif = LocalContext.current
 
@@ -496,6 +493,45 @@ fun CreateHWScreen(
                             },
                             icon = R.drawable.video
                         )
+
+                        var isMapDialogVisible by remember { mutableStateOf(false) }
+
+                        FloatingActionButton(
+                            onClick = {
+                                isMapDialogVisible = true
+                            },
+                            content = {
+                                Icon(
+                                    imageVector = Icons.Default.LocationOn,
+                                    contentDescription = stringResource(R.string.add_ubicacion),
+                                    tint = Color.Black
+                                )
+                            }
+                        )
+
+                        if (isMapDialogVisible) {
+                            AlertDialog(
+                                onDismissRequest = {
+                                    isMapDialogVisible = false
+                                },
+                                text = {
+                                    OSMComposeMapa(
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .background(Color.White)
+                                    )
+                                },
+                                confirmButton = {
+                                    Button(
+                                        onClick = {
+                                            isMapDialogVisible = false
+                                        }
+                                    ) {
+                                        Text("Cerrar")
+                                    }
+                                }
+                            )
+                        }
                     }
                 },
                 content = {
@@ -571,9 +607,4 @@ fun CreateHWScreen(
             )
         }
     }
-<<<<<<< HEAD
 }
-
-=======
-}
->>>>>>> 627598d96c0c02b77d1ad4fa5c1215a22d4acb6c
