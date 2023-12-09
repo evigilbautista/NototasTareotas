@@ -80,13 +80,12 @@ dependencies {
     kapt "androidx.room:room-compiler:2.4.3"
 
 
-// mapas
+    // mapas
     implementation("org.osmdroid:osmdroid-android:6.1.17")
     implementation("tech.utsmankece:osm-android-compose:0.0.5")
 
     //
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
-
 
 }

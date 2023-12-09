@@ -1,9 +1,9 @@
-package com.NototasTareotas.photonotes.persistence
+package com.NototasTareotas.photonotes.BaseDeDatos.BD
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import androidx.room.TypeConverters
-import com.NototasTareotas.photonotes.model.Note
+import com.NototasTareotas.photonotes.BaseDeDatos.Models.Note
+import com.NototasTareotas.photonotes.BaseDeDatos.DAOs.NotesDao
 
 @Database(entities = [
   Note::class], version = 2)

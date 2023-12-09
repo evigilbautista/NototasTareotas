@@ -1,4 +1,4 @@
-package com.NototasTareotas.photonotes.ui.createNote
+package com.NototasTareotas.photonotes.ui.Otros
 
 import android.Manifest
 import android.app.Activity

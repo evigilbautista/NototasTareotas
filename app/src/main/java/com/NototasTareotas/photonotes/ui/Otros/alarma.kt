@@ -1,4 +1,4 @@
-package com.NototasTareotas.photonotes.ui.createNote
+package com.NototasTareotas.photonotes.ui.Otros
 
 /*
 @Composable

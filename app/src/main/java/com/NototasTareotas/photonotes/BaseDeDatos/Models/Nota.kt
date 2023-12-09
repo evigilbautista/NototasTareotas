@@ -1,14 +1,14 @@
-package com.NototasTareotas.photonotes.model
+package com.NototasTareotas.photonotes.BaseDeDatos.Models
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.NototasTareotas.photonotes.Constants
+import com.NototasTareotas.photonotes.ui.Otros.Navegacion
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 // Anotación @Entity indica que esta clase representa una entidad de Room (tabla en la base de datos)
-@Entity(tableName = Constants.TABLE_NAME)
+@Entity(tableName = Navegacion.TABLE_NAME)
 data class Note(
     // Anotación @PrimaryKey indica que 'id' es la clave primaria y puede ser generada automáticamente
     @PrimaryKey(autoGenerate = true) val id: Int,

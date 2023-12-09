@@ -1,7 +1,7 @@
-package com.NototasTareotas.photonotes.persistence
+package com.NototasTareotas.photonotes.BaseDeDatos.DAOs
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.NototasTareotas.photonotes.model.Note
+import com.NototasTareotas.photonotes.BaseDeDatos.Models.Note
 
 @Dao
 interface NotesDao {

@@ -1,4 +1,4 @@
-package com.NototasTareotas.photonotes.ui.createNote
+package com.NototasTareotas.photonotes.ui.Crear
 import android.annotation.SuppressLint
 import android.app.NotificationManager
 import android.content.Context
@@ -41,8 +41,10 @@ import coil.request.ImageRequest
 import com.NototasTareotas.photonotes.PhotoNotesApp
 import com.NototasTareotas.photonotes.R
 import com.NototasTareotas.photonotes.ui.GenericAppBar
-import com.NototasTareotas.photonotes.ui.NotesList.NotesFab
+import com.NototasTareotas.photonotes.ui.Lista.NotesFab
 import com.NototasTareotas.photonotes.ui.NotesViewModel
+import com.NototasTareotas.photonotes.ui.Otros.CameraButtonExample
+import com.NototasTareotas.photonotes.ui.Otros.OSMComposeMapa
 import com.NototasTareotas.photonotes.ui.theme.PhotoNotesTheme
 
 
@@ -388,6 +390,18 @@ private const val NOTIFICATION_ID = 2
 
 
 
+
+
+
+
+
+
+
+
+
+
+// TAREAS
+
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun CreateHWScreen(
@@ -399,7 +413,7 @@ fun CreateHWScreen(
     val currentPhotos = remember { mutableStateOf("") }
     val currentVideo = remember { mutableStateOf("") }
     val currentAudio = remember { mutableStateOf("") }
-    val currentTipo = remember { mutableStateOf(1) }
+    val currentTipo = remember { mutableStateOf(2) }
     val saveButtonState = remember { mutableStateOf(false) }
     val notif = LocalContext.current
 
@@ -454,7 +468,7 @@ fun CreateHWScreen(
                                 currentTipo.value,
                             )
 
-                            showNotification(notif, "Nota guardada")
+                            showNotification(notif, "Tarea guardada")
                             navController.popBackStack()
                         },
                         iconState = saveButtonState

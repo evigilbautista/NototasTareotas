@@ -1,11 +1,11 @@
 package com.NototasTareotas.photonotes
 import android.app.Application
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.room.Room
-import com.NototasTareotas.photonotes.persistence.NotesDao
-import com.NototasTareotas.photonotes.persistence.NotesDatabase
+import com.NototasTareotas.photonotes.BaseDeDatos.DAOs.NotesDao
+import com.NototasTareotas.photonotes.BaseDeDatos.BD.NotesDatabase
+import com.NototasTareotas.photonotes.ui.Otros.Navegacion
 
 class PhotoNotesApp : Application(){
 
@@ -22,7 +22,7 @@ class PhotoNotesApp : Application(){
         } else {
             db = Room.databaseBuilder(
                 instance!!.applicationContext,
-                NotesDatabase::class.java, Constants.DATABASE_NAME
+                NotesDatabase::class.java, Navegacion.DATABASE_NAME
             ).fallbackToDestructiveMigration()// remove in prod
                 .build()
             db!!

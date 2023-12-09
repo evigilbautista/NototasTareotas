@@ -15,7 +15,8 @@ private val DarkColorPalette = darkColors(
 
 val noteVerdeB = Color(0xFF36d19a)
 val noteVerdeF = Color(0xFF24c68f)
-
+val tarAzulB = Color(0xFF59a5ff)
+val tarAzulF = Color(0xFF2c82e8)
 
 private val LightColorPalette = lightColors(
     primary = Color.White,

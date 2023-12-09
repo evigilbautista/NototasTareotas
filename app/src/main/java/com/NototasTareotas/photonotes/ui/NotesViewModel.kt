@@ -1,8 +1,11 @@
 package com.NototasTareotas.photonotes.ui
 
-import androidx.lifecycle.*
-import com.NototasTareotas.photonotes.model.Note
-import com.NototasTareotas.photonotes.persistence.NotesDao
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
+import com.NototasTareotas.photonotes.BaseDeDatos.DAOs.NotesDao
+import com.NototasTareotas.photonotes.BaseDeDatos.Models.Note
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
