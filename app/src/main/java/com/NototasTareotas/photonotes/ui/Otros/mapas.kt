@@ -33,11 +33,14 @@ import org.osmdroid.views.overlay.CopyrightOverlay
 
 @Composable
 fun OSMComposeMapa(
-    modifier: Modifier = Modifier.fillMaxSize(),
+    modifier: Modifier = Modifier.fillMaxSize(1f/3f),
+    latitud: Double,
+    longitud: Double
 
-    ) {
+    //viewModel: OpenRouteServiceViewModel
+) {
 
-
+    //val rutaUiState = viewModel.directUiState
 
     // define properties with remember with default value
     var mapProperties by remember {
@@ -46,7 +49,7 @@ fun OSMComposeMapa(
 
     // define marker state
     val depokMarkerState = rememberMarkerState(
-        geoPoint = GeoPoint(20.1389, -101.15088),
+        geoPoint = GeoPoint(latitud, longitud),
         rotation = 90f // default is 0f
     )
 
@@ -63,17 +66,17 @@ fun OSMComposeMapa(
 
     // define camera state
     val cameraState = rememberCameraState {
-        geoPoint = GeoPoint(20.1389, -101.15088)
+        geoPoint = GeoPoint(latitud, longitud)
         zoom = 18.0 // optional, default is 5.0
     }
 
 
-//    viewModel.directions_get("driving-car",
-//        GeoPoint(20.139261336104898, -101.15026781862757),
-//        GeoPoint(20.142110828753893, -101.1787275290486),
-//        )
-
-//    Log.d("GIVO",rutaUiState.value.toString())
+    /*viewModel.directions_get("driving-car",
+        GeoPoint(20.139261336104898, -101.15026781862757),
+       GeoPoint(20.142110828753893, -101.1787275290486),
+        )
+    */
+    //Log.d("GIVO",rutaUiState.value.toString())
     // define polyline
     var geoPointPoluLyne = remember {
         listOf(GeoPoint(20.1389,-101.15088),
@@ -82,8 +85,6 @@ fun OSMComposeMapa(
             GeoPoint(20.14395,-101.15128),
             GeoPoint(20.14411,-101.15186))
         //rutaUiState.value.resp?.features[0].geometry.coordinates.map { GeoPoint(it[0],it[1]) }
-
-
     }
 
 
@@ -103,7 +104,7 @@ fun OSMComposeMapa(
         modifier = modifier
     )
     {
-        Marker(state = depokMarkerState, title="ITSUR", snippet = "Escuela") {
+        Marker(state = depokMarkerState, title="${latitud}", snippet = "${longitud}") {
             // create info window node
             Column(
                 modifier = Modifier
@@ -119,10 +120,10 @@ fun OSMComposeMapa(
 
         }
         //if(rutaUiState.value.resp!=null){
-            // geoPointPoluLyne = rutaUiState.value.resp!!.features[0].geometry.coordinates.map { GeoPoint(it[1],it[0]) }
-            Polyline(geoPoints = geoPointPoluLyne) {
+        //  geoPointPoluLyne = rutaUiState.value.resp!!.features[0].geometry.coordinates.map { GeoPoint(it[1],it[0]) }
+        Polyline(geoPoints = geoPointPoluLyne) {
 
-            }
+        }
         //}
     }
 }

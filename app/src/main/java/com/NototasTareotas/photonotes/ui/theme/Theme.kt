@@ -21,7 +21,7 @@ val tarAzulF = Color(0xFF2c82e8)
 private val LightColorPalette = lightColors(
     primary = Color.White,
     background = Color.White,
-    onPrimary = Color.Black,
+   // onPrimary = Color.Black,
 )
 
 @Composable

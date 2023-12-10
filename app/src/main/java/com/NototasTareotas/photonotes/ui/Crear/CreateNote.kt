@@ -44,9 +44,10 @@ import com.NototasTareotas.photonotes.ui.GenericAppBar
 import com.NototasTareotas.photonotes.ui.Lista.NotesFab
 import com.NototasTareotas.photonotes.ui.NotesViewModel
 import com.NototasTareotas.photonotes.ui.Otros.CameraButtonExample
+import com.NototasTareotas.photonotes.ui.Otros.CurrentLocationScreen
 import com.NototasTareotas.photonotes.ui.Otros.OSMComposeMapa
 import com.NototasTareotas.photonotes.ui.theme.PhotoNotesTheme
-
+import com.utsman.osmandcompose.OpenStreetMap
 
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -176,11 +177,7 @@ fun CreateNoteScreen(
                                     isMapDialogVisible = false
                                 },
                                 text = {
-                                    OSMComposeMapa(
-                                        modifier = Modifier
-                                            .fillMaxSize()
-                                            .background(Color.White)
-                                    )
+                                    CurrentLocationScreen()
                                 },
                                 confirmButton = {
                                     Button(
@@ -529,11 +526,7 @@ fun CreateHWScreen(
                                     isMapDialogVisible = false
                                 },
                                 text = {
-                                    OSMComposeMapa(
-                                        modifier = Modifier
-                                            .fillMaxSize()
-                                            .background(Color.White)
-                                    )
+
                                 },
                                 confirmButton = {
                                     Button(
