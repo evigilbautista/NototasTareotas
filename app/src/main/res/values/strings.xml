@@ -13,4 +13,8 @@
     <string name="add_audio">Agregar Audio</string>
     <string name="foto_notas">NOTAS Y TAREAS</string>
     <string name="approximate_location_access">Acceso a ubicacion aproximada</string>
+    <string name="cancelar">cancelar\n</string>
+    <string name="reminder">recordatorio</string>
+    <string name="add_alarma">alarma</string>
+    <string name="add_minutos">minutos\n</string>
 </resources>

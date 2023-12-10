@@ -14,6 +14,7 @@ object Navegacion {
     const val NAVIGATION_NOTE_ID_Argument = "noteId"
     const val TABLE_NAME = "Notes"
     const val DATABASE_NAME = "NotesDatabase"
+    const val idCanal = "Terminaste los deberes"
 
     fun noteDetailNavigation(noteId : Int) = "noteDetail/$noteId"
     fun noteEditNavigation(noteId : Int) = "noteEdit/$noteId"

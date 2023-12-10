@@ -1,9 +1,14 @@
 package com.NototasTareotas.photonotes.ui.Crear
 import android.annotation.SuppressLint
+import android.app.AlarmManager
+import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.media.MediaPlayer
 import android.net.Uri
+import android.os.Build
 import android.view.ViewGroup
 import android.widget.MediaController
 import android.widget.VideoView
@@ -12,6 +17,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
@@ -32,9 +38,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
@@ -46,16 +54,30 @@ import com.NototasTareotas.photonotes.ui.NotesViewModel
 import com.NototasTareotas.photonotes.ui.Otros.CameraButtonExample
 import com.NototasTareotas.photonotes.ui.Otros.CurrentLocationScreen
 import com.NototasTareotas.photonotes.ui.Otros.OSMComposeMapa
+import com.NototasTareotas.photonotes.ui.Otros.alarma
 import com.NototasTareotas.photonotes.ui.theme.PhotoNotesTheme
+<<<<<<< HEAD
 import com.utsman.osmandcompose.OpenStreetMap
+=======
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import java.util.Calendar
+>>>>>>> ebe5d5a821e4cd635644be660850d0e0c2b322a0
 
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun CreateNoteScreen(
     navController: NavController,
-    viewModel: NotesViewModel
-) {
+    viewModel: NotesViewModel,
+
+
+)
+
+
+
+{
 
     val currentNote = remember { mutableStateOf("") }
     val currentTitle = remember { mutableStateOf("") }
@@ -65,6 +87,41 @@ fun CreateNoteScreen(
     val currentTipo = remember {mutableStateOf(1)}
     val saveButtonState = remember { mutableStateOf(false) }
     val notif = LocalContext.current
+    var tiempoDeEspera = 3000L
+
+    fun modificarTiempoDeEspera(agregar: Boolean, minutos: Int) {
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = tiempoDeEspera
+
+        if (agregar) {
+            calendar.add(Calendar.MINUTE, minutos)
+        } else {
+            calendar.add(Calendar.MINUTE, -minutos)
+        }
+
+        tiempoDeEspera = calendar.timeInMillis
+    }
+
+
+    fun botonMasPresionado() {
+        modificarTiempoDeEspera(true, 1) // Puedes ajustar la cantidad de minutos que deseas agregar
+    }
+
+    // Botón de menos
+    fun botonMenosPresionado() {
+        modificarTiempoDeEspera(false, 1) // Puedes ajustar la cantidad de minutos que deseas restar
+    }
+
+    fun botonMasHorasPresionado() {
+        modificarTiempoDeEspera(true, 60) // Puedes ajustar la cantidad de minutos que deseas agregar
+    }
+
+    // Botón de menos
+    fun botonMenosHorasPresionado() {
+        modificarTiempoDeEspera(false, 60) // Puedes ajustar la cantidad de minutos que deseas restar
+    }
+
+
 
 
     val getImageRequest = rememberLauncherForActivityResult(
@@ -95,36 +152,64 @@ fun CreateNoteScreen(
     }
 
 
+
+    fun notifica() {
+        CrearcanalNotificacion("canal_notificacion", notif)
+        notificaciones(
+            notif,
+            "canal_notificacion",
+            1,
+            "Nota Creada",
+            "Tu nota ha sido creada exitosamente."
+        )
+    }
+
+
+
     PhotoNotesTheme {
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.secondary) {
             Scaffold(
-                topBar = {
-                    GenericAppBar(
-                        title = "Crear Nota ",
-                        icon = {
-                            Icon(
-                                imageVector = ImageVector.vectorResource(R.drawable.save),
-                                contentDescription = stringResource(R.string.save_note),
-                                tint = Color.Black,
-                            )
-                        },
-                        onIconClick = {
-                            viewModel.createNote(
-                                currentTitle.value,
-                                currentNote.value,
-                                currentPhotos.value,
-                                currentVideo.value,
-                                currentAudio.value,
-                                currentTipo.value,
-                            )
 
-                            showNotification(notif, "Nota guardada")
-                            navController.popBackStack()
-                        },
-                        iconState = saveButtonState
-                    )
-                },
+                topBar = {
+                        GenericAppBar(
+                        title = "Crear Nota ",
+                            icon = {
+                                Icon(
+                                    imageVector = ImageVector.vectorResource(R.drawable.save),
+                                    contentDescription = stringResource(R.string.save_note),
+                                    tint = Color.Black,
+
+                                )
+
+                            },
+                            onIconClick = {
+                                viewModel.createNote(
+                                    currentTitle.value,
+                                    currentNote.value,
+                                    currentPhotos.value,
+                                    currentVideo.value,
+                                    currentAudio.value,
+                                    currentTipo.value,
+                                )
+
+                                GlobalScope.launch {
+                                    delay(tiempoDeEspera)
+                                    notifica()
+                                }
+                                navController.popBackStack()
+
+                            },
+                            iconState = saveButtonState
+                        )
+
+
+
+                    },
+
+
+
                 floatingActionButton = {
+
                     Row(
                         verticalAlignment = Alignment.Bottom,
                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -132,6 +217,8 @@ fun CreateNoteScreen(
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp)
                     ) {
+                        botonMenosPresionado()
+                        botonMasPresionado()
                         CameraButtonExample()
                         NotesFab(
                             contentDescription = stringResource(R.string.add_image),
@@ -147,35 +234,12 @@ fun CreateNoteScreen(
                             },
                             icon = R.drawable.audio
                         )
-
-                        NotesFab(
-                            contentDescription = stringResource(R.string.add_video),
-                            action = {
-                                getVideoRequest.launch(arrayOf("video/*"))
-                            },
-                            icon = R.drawable.video
-                        )
-                        // Botón para abrir el mapa
-                        var isMapDialogVisible by remember { mutableStateOf(false) }
-
-                        FloatingActionButton(
-                            onClick = {
-                                isMapDialogVisible = true
-                            },
-                            content = {
-                                Icon(
-                                    imageVector = Icons.Default.LocationOn,
-                                    contentDescription = stringResource(R.string.add_ubicacion),
-                                    tint = Color.Black
-                                )
-                            }
-                        )
-
-                        if (isMapDialogVisible) {
-                            AlertDialog(
-                                onDismissRequest = {
-                                    isMapDialogVisible = false
+                            NotesFab(
+                                contentDescription = stringResource(R.string.add_video),
+                                action = {
+                                    getVideoRequest.launch(arrayOf("video/*"))
                                 },
+<<<<<<< HEAD
                                 text = {
                                     CurrentLocationScreen()
                                 },
@@ -187,11 +251,56 @@ fun CreateNoteScreen(
                                     ) {
                                         Text("Cerrar")
                                     }
+=======
+                                icon = R.drawable.video
+                            )
+
+                   
+
+
+
+                            // Botón para abrir el mapa
+                            var isMapDialogVisible by remember { mutableStateOf(false) }
+
+                            FloatingActionButton(
+                                onClick = {
+                                    isMapDialogVisible = true
+                                },
+                                content = {
+                                    Icon(
+                                        imageVector = Icons.Default.LocationOn,
+                                        contentDescription = stringResource(R.string.add_ubicacion),
+                                        tint = Color.Black
+                                    )
+>>>>>>> ebe5d5a821e4cd635644be660850d0e0c2b322a0
                                 }
                             )
-                        }
 
-                    }
+                            if (isMapDialogVisible) {
+                                AlertDialog(
+                                    onDismissRequest = {
+                                        isMapDialogVisible = false
+                                    },
+                                    text = {
+                                        OSMComposeMapa(
+                                            modifier = Modifier
+                                                .fillMaxSize()
+                                                .background(Color.White)
+                                        )
+                                    },
+                                    confirmButton = {
+                                        Button(
+                                            onClick = {
+                                                isMapDialogVisible = false
+                                            }
+                                        ) {
+                                            Text("Cerrar")
+                                        }
+                                    }
+                                )
+                            }
+
+                        }
 
                 },
                 content = {
@@ -259,7 +368,103 @@ fun CreateNoteScreen(
                                     currentTitle.value != "" && currentNote.value != ""
                             },
                             label = { Text(text = "Contenido") }
+
                         )
+
+                        var textoMinutos by remember { mutableStateOf("0") }
+                        var contador by remember { mutableStateOf(0) }
+                        var textohoras by remember { mutableStateOf("0") }
+                        var contadorh by remember { mutableStateOf(0) }
+
+
+Row {
+    TextField(
+        value = textoMinutos,
+        onValueChange = {
+            textoMinutos = it
+            // Maneja la entrada de texto si es necesario
+        },
+        keyboardOptions = KeyboardOptions.Default.copy(
+            keyboardType = KeyboardType.Number
+        ),
+        modifier = Modifier.width(60.dp),
+    )
+    Spacer(modifier = Modifier.padding(18.dp))
+
+
+    TextField(
+        value = textohoras,
+        onValueChange = {
+            textohoras = it
+            // Maneja la entrada de texto si es necesario
+        },
+        keyboardOptions = KeyboardOptions.Default.copy(
+            keyboardType = KeyboardType.Number
+        ),
+        modifier = Modifier.width(60.dp),
+    )
+
+}
+
+Row{
+    Column {
+
+
+        Button(onClick = {
+            if (contador <= 60) { // Verifica que el contador no sea menor que 0
+                botonMasPresionado()
+                contador += 1
+                textoMinutos = contador.toString()
+            }
+        }
+        ) {
+            Text("+ minuto")
+        }
+
+        Spacer(modifier = Modifier.width(18.dp))
+
+        Button(onClick = {
+            if (contador > 0) { // Verifica que el contador no sea menor que 0
+                botonMenosPresionado()
+                contador -= 1
+                textoMinutos = contador.toString()
+            }
+        }) {
+            Text("- minuto")
+        }}
+
+    Column {
+        Spacer(modifier = Modifier.width(25.dp))
+        Button(onClick = {
+
+            if (contadorh <= 24) {
+                botonMasHorasPresionado()
+                contadorh += 1
+                textohoras = contadorh.toString()
+            }
+        }
+        ) {
+            Text("+ horas")
+        }
+
+        Spacer(modifier = Modifier.width(25.dp))
+
+        Button(onClick = {
+            if (contadorh > 0) {
+                botonMenosHorasPresionado()
+                contadorh -= 1
+                textohoras = contadorh.toString()
+            }
+        }) {
+            Text("- horas")
+        }}
+}
+
+
+
+
+
+                        
                     }
                 }
             )
@@ -364,27 +569,6 @@ fun AudioPlayer(audioUrl: String) {
     }
 }
 
-private fun showNotification(context: Context, message: String) {
-
-    val notification = NotificationCompat.Builder(context, CHANNEL_ID)
-        .setContentTitle("Nota guardada")
-        .setContentText(message)
-        .setSmallIcon(R.drawable.save)
-        .setAutoCancel(true)
-        .build()
-
-    // Obtener el NotificationManager
-    val notificationManager =
-        context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-    // Notificación de publicación
-    notificationManager.notify(NOTIFICATION_ID, notification)
-}
-
-// Declarar constantes para el canal de notificación y el ID de notificación
-private const val CHANNEL_ID = "notes_channel"
-private const val NOTIFICATION_ID = 2
-
 
 
 
@@ -465,7 +649,7 @@ fun CreateHWScreen(
                                 currentTipo.value,
                             )
 
-                            showNotification(notif, "Tarea guardada")
+
                             navController.popBackStack()
                         },
                         iconState = saveButtonState
@@ -614,4 +798,52 @@ fun CreateHWScreen(
             )
         }
     }
+}
+
+
+
+
+
+
+
+fun notificaciones(context: Context,
+                   idCanal: String,
+                   idNotificacion: Int,
+                   titulo: String,
+                   texto: String,
+                   priority: Int = NotificationCompat.PRIORITY_DEFAULT) {
+
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        val builder = NotificationCompat.Builder(context, idCanal)
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setContentTitle(titulo)
+            .setContentText(texto)
+            .setPriority(priority)
+        with(NotificationManagerCompat.from(context)) {
+            notify(idNotificacion, builder.build())
+        }
+    }
+}
+
+
+fun CrearcanalNotificacion(idCanal: String, context: Context) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        val nombre = "Terminaste los deberes?"
+        val descripcion = "ya los terminaste"
+        val importancia = NotificationManager.IMPORTANCE_HIGH
+        val canal = NotificationChannel(idCanal, nombre, importancia)
+            .apply { description = descripcion }
+        val notificationManager = context.getSystemService(NotificationManager::class.java)
+        notificationManager.createNotificationChannel(canal)
+    }
+}
+
+fun notificacionProgramada(context: Context) {
+    val intent = Intent(context, alarma::class.java)
+    val pendingIntent = PendingIntent.getBroadcast(context,
+        alarma.NOTIFICATION_ID, intent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
+    val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+    alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 1000, pendingIntent)
+
 }

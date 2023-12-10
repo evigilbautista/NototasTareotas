@@ -1,17 +1,33 @@
 package com.NototasTareotas.photonotes.ui.Otros
 
-/*
-@Composable
-fun Alarma(){
+import android.app.NotificationManager
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import androidx.core.app.NotificationCompat
+import com.NototasTareotas.photonotes.R
+import com.NototasTareotas.photonotes.ui.Otros.Navegacion.idCanal
 
-    val context = LocalContext.current
 
-    val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
-
-    val pendingIntent = PendingIntent.getService(context, requestId, intent, PendingIntent.FLAG_NO_CREATE)
-
-    if (pendingIntent != null && alarmManager != null){
-
-        alarmManager.cancel(pendingIntent)
+class alarma : BroadcastReceiver() {
+companion object {
+    const val NOTIFICATION_ID = 2
+}
+    override fun onReceive(context: Context, intent: Intent) {
+        alarma(context)
     }
-}*/
+
+    private fun alarma(context: Context) {
+        val notificacion = NotificationCompat.Builder(context, idCanal)
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setContentTitle("Terminaste los deberes?")
+            .setContentText("ya los terminaste")
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .build()
+
+
+        val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        manager.notify(NOTIFICATION_ID, notificacion)
+    }
+}
+
