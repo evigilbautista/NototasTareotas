@@ -3,13 +3,13 @@ import android.app.Application
 import android.content.Intent
 import android.net.Uri
 import androidx.room.Room
-import com.NototasTareotas.photonotes.BaseDeDatos.DAOs.NotesDao
 import com.NototasTareotas.photonotes.BaseDeDatos.BD.NotesDatabase
+import com.NototasTareotas.photonotes.BaseDeDatos.DAOs.NotesDao
 import com.NototasTareotas.photonotes.ui.Otros.Navegacion
 
-class PhotoNotesApp : Application(){
+class PhotoNotesApp : Application() {
 
-    private var db : NotesDatabase? = null
+    private var db: NotesDatabase? = null
 
 
     init {
@@ -17,7 +17,7 @@ class PhotoNotesApp : Application(){
     }
 
     private fun getDb(): NotesDatabase {
-        return if (db != null){
+        return if (db != null) {
             db!!
         } else {
             db = Room.databaseBuilder(
@@ -37,7 +37,7 @@ class PhotoNotesApp : Application(){
             return instance!!.getDb().NotesDao()
         }
 
-        fun getUriPermission(uri: Uri){
+        fun getUriPermission(uri: Uri) {
             instance!!.applicationContext.contentResolver.takePersistableUriPermission(
                 uri,
                 Intent.FLAG_GRANT_READ_URI_PERMISSION
@@ -48,3 +48,4 @@ class PhotoNotesApp : Application(){
 
 
 }
+

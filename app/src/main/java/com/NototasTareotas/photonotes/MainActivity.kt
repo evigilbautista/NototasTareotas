@@ -1,18 +1,14 @@
 package com.NototasTareotas.photonotes
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.NototasTareotas.photonotes.MyApp.Companion.CHANNEL_ID
 import com.NototasTareotas.photonotes.ui.Crear.CreateHWScreen
 import com.NototasTareotas.photonotes.ui.Crear.CreateNoteScreen
 import com.NototasTareotas.photonotes.ui.Detalles.HWDetailScreen
@@ -27,31 +23,17 @@ import com.NototasTareotas.photonotes.ui.Otros.Navegacion
 
 class MainActivity : ComponentActivity() {
 
+
     private lateinit var notesViewModel: NotesViewModel
 
 
-    private fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                CHANNEL_ID,
-                "Notificaciones de notas",
-                NotificationManager.IMPORTANCE_DEFAULT
-            ).apply {
-                description = "Canal de notificaciones para notas"
-            }
-
-            val notificationManager =
-                applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(channel)
-        }
-    }
 
 
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        createNotificationChannel()
+
         // retrieve viewModel
         notesViewModel =
             NotesViewModelFactory(PhotoNotesApp.getDao()).create(NotesViewModel::class.java)
@@ -122,9 +104,12 @@ class MainActivity : ComponentActivity() {
 
                 // Create Note
                 composable(Navegacion.NAVIGATION_NOTES_CREATE) {
+                    val context = LocalContext.current
                     CreateNoteScreen(
+
                         navController,
-                        notesViewModel
+                        notesViewModel,
+
                     )
                 }
 
