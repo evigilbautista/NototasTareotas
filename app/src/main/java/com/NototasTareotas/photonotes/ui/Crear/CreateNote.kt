@@ -1,4 +1,6 @@
 package com.NototasTareotas.photonotes.ui.Crear
+
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.NotificationChannel
@@ -6,6 +8,7 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Build
@@ -25,6 +28,7 @@ import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,6 +45,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.navigation.NavController
@@ -48,22 +53,16 @@ import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.NototasTareotas.photonotes.PhotoNotesApp
 import com.NototasTareotas.photonotes.R
+
 import com.NototasTareotas.photonotes.ui.GenericAppBar
 import com.NototasTareotas.photonotes.ui.Lista.NotesFab
 import com.NototasTareotas.photonotes.ui.NotesViewModel
 import com.NototasTareotas.photonotes.ui.Otros.CameraButtonExample
-import com.NototasTareotas.photonotes.ui.Otros.CurrentLocationScreen
-import com.NototasTareotas.photonotes.ui.Otros.OSMComposeMapa
-import com.NototasTareotas.photonotes.ui.Otros.alarma
 import com.NototasTareotas.photonotes.ui.theme.PhotoNotesTheme
-<<<<<<< HEAD
-import com.utsman.osmandcompose.OpenStreetMap
-=======
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Calendar
->>>>>>> ebe5d5a821e4cd635644be660850d0e0c2b322a0
 
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -73,8 +72,7 @@ fun CreateNoteScreen(
     viewModel: NotesViewModel,
 
 
-)
-
+    )
 
 
 {
@@ -84,10 +82,14 @@ fun CreateNoteScreen(
     val currentPhotos = remember { mutableStateOf("") }
     val currentVideo = remember { mutableStateOf("") }
     val currentAudio = remember { mutableStateOf("") }
-    val currentTipo = remember {mutableStateOf(1)}
+    val currentTipo = remember { mutableStateOf(1) }
     val saveButtonState = remember { mutableStateOf(false) }
     val notif = LocalContext.current
     var tiempoDeEspera = 3000L
+
+
+
+
 
     fun modificarTiempoDeEspera(agregar: Boolean, minutos: Int) {
         val calendar = Calendar.getInstance()
@@ -102,6 +104,19 @@ fun CreateNoteScreen(
         tiempoDeEspera = calendar.timeInMillis
     }
 
+    fun notifica() {
+        CrearcanalNotificacion("canal_notificacion", notif)
+        notificaciones(
+            notif,
+            "canal_notificacion",
+            1,
+            "Nota Creada",
+            "Tu nota ha sido creada exitosamente."
+        )
+    }
+
+
+
 
     fun botonMasPresionado() {
         modificarTiempoDeEspera(true, 1) // Puedes ajustar la cantidad de minutos que deseas agregar
@@ -113,15 +128,19 @@ fun CreateNoteScreen(
     }
 
     fun botonMasHorasPresionado() {
-        modificarTiempoDeEspera(true, 60) // Puedes ajustar la cantidad de minutos que deseas agregar
+        modificarTiempoDeEspera(
+            true,
+            60
+        ) // Puedes ajustar la cantidad de minutos que deseas agregar
     }
 
     // Botón de menos
     fun botonMenosHorasPresionado() {
-        modificarTiempoDeEspera(false, 60) // Puedes ajustar la cantidad de minutos que deseas restar
+        modificarTiempoDeEspera(
+            false,
+            60
+        ) // Puedes ajustar la cantidad de minutos que deseas restar
     }
-
-
 
 
     val getImageRequest = rememberLauncherForActivityResult(
@@ -153,63 +172,54 @@ fun CreateNoteScreen(
 
 
 
-    fun notifica() {
-        CrearcanalNotificacion("canal_notificacion", notif)
-        notificaciones(
-            notif,
-            "canal_notificacion",
-            1,
-            "Nota Creada",
-            "Tu nota ha sido creada exitosamente."
-        )
-    }
+
+
+
+
 
 
 
     PhotoNotesTheme {
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.secondary) {
             Scaffold(
-
                 topBar = {
-                        GenericAppBar(
+                    GenericAppBar(
                         title = "Crear Nota ",
-                            icon = {
-                                Icon(
-                                    imageVector = ImageVector.vectorResource(R.drawable.save),
-                                    contentDescription = stringResource(R.string.save_note),
-                                    tint = Color.Black,
-
-                                )
-
-                            },
-                            onIconClick = {
-                                viewModel.createNote(
-                                    currentTitle.value,
-                                    currentNote.value,
-                                    currentPhotos.value,
-                                    currentVideo.value,
-                                    currentAudio.value,
-                                    currentTipo.value,
-                                )
-
-                                GlobalScope.launch {
-                                    delay(tiempoDeEspera)
-                                    notifica()
-                                }
-                                navController.popBackStack()
-
-                            },
-                            iconState = saveButtonState
-                        )
+                        icon = {
+                            Icon(
+                                imageVector = ImageVector.vectorResource(R.drawable.save),
+                                contentDescription = stringResource(R.string.save_note),
+                                tint = Color.Black,
+                            )
+                        },
+                        onIconClick = {
+                            viewModel.createNote(
+                                currentTitle.value,
+                                currentNote.value,
+                                currentPhotos.value,
+                                currentVideo.value,
+                                currentAudio.value,
+                                currentTipo.value,
+                            )
 
 
 
-                    },
 
+
+                            GlobalScope.launch {
+                                delay(tiempoDeEspera)
+                                notifica()
+                            }
+
+
+                            navController.popBackStack()
+                        },
+                        iconState = saveButtonState
+                    )
+                },
 
 
                 floatingActionButton = {
-
                     Row(
                         verticalAlignment = Alignment.Bottom,
                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -217,8 +227,7 @@ fun CreateNoteScreen(
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp)
                     ) {
-                        botonMenosPresionado()
-                        botonMasPresionado()
+
                         CameraButtonExample()
                         NotesFab(
                             contentDescription = stringResource(R.string.add_image),
@@ -227,6 +236,7 @@ fun CreateNoteScreen(
                             },
                             icon = R.drawable.camera
                         )
+
                         NotesFab(
                             contentDescription = stringResource(R.string.add_audio),
                             action = {
@@ -234,74 +244,15 @@ fun CreateNoteScreen(
                             },
                             icon = R.drawable.audio
                         )
-                            NotesFab(
-                                contentDescription = stringResource(R.string.add_video),
-                                action = {
-                                    getVideoRequest.launch(arrayOf("video/*"))
-                                },
-<<<<<<< HEAD
-                                text = {
-                                    CurrentLocationScreen()
-                                },
-                                confirmButton = {
-                                    Button(
-                                        onClick = {
-                                            isMapDialogVisible = false
-                                        }
-                                    ) {
-                                        Text("Cerrar")
-                                    }
-=======
-                                icon = R.drawable.video
-                            )
 
-                   
-
-
-
-                            // Botón para abrir el mapa
-                            var isMapDialogVisible by remember { mutableStateOf(false) }
-
-                            FloatingActionButton(
-                                onClick = {
-                                    isMapDialogVisible = true
-                                },
-                                content = {
-                                    Icon(
-                                        imageVector = Icons.Default.LocationOn,
-                                        contentDescription = stringResource(R.string.add_ubicacion),
-                                        tint = Color.Black
-                                    )
->>>>>>> ebe5d5a821e4cd635644be660850d0e0c2b322a0
-                                }
-                            )
-
-                            if (isMapDialogVisible) {
-                                AlertDialog(
-                                    onDismissRequest = {
-                                        isMapDialogVisible = false
-                                    },
-                                    text = {
-                                        OSMComposeMapa(
-                                            modifier = Modifier
-                                                .fillMaxSize()
-                                                .background(Color.White)
-                                        )
-                                    },
-                                    confirmButton = {
-                                        Button(
-                                            onClick = {
-                                                isMapDialogVisible = false
-                                            }
-                                        ) {
-                                            Text("Cerrar")
-                                        }
-                                    }
-                                )
-                            }
-
-                        }
-
+                        NotesFab(
+                            contentDescription = stringResource(R.string.add_video),
+                            action = {
+                                getVideoRequest.launch(arrayOf("video/*"))
+                            },
+                            icon = R.drawable.video
+                        )
+                    }
                 },
                 content = {
                     Column(
@@ -368,109 +319,109 @@ fun CreateNoteScreen(
                                     currentTitle.value != "" && currentNote.value != ""
                             },
                             label = { Text(text = "Contenido") }
-
                         )
-
                         var textoMinutos by remember { mutableStateOf("0") }
                         var contador by remember { mutableStateOf(0) }
                         var textohoras by remember { mutableStateOf("0") }
                         var contadorh by remember { mutableStateOf(0) }
 
 
-Row {
-    TextField(
-        value = textoMinutos,
-        onValueChange = {
-            textoMinutos = it
-            // Maneja la entrada de texto si es necesario
-        },
-        keyboardOptions = KeyboardOptions.Default.copy(
-            keyboardType = KeyboardType.Number
-        ),
-        modifier = Modifier.width(60.dp),
-    )
-    Spacer(modifier = Modifier.padding(18.dp))
+                        Row {
+                            TextField(
+                                value = textoMinutos,
+                                onValueChange = {
+                                    textoMinutos = it
+                                    // Maneja la entrada de texto si es necesario
+                                },
+                                keyboardOptions = KeyboardOptions.Default.copy(
+                                    keyboardType = KeyboardType.Number
+                                ),
+                                modifier = Modifier.width(60.dp),
+                            )
+                            Spacer(modifier = Modifier.padding(18.dp))
 
 
-    TextField(
-        value = textohoras,
-        onValueChange = {
-            textohoras = it
-            // Maneja la entrada de texto si es necesario
-        },
-        keyboardOptions = KeyboardOptions.Default.copy(
-            keyboardType = KeyboardType.Number
-        ),
-        modifier = Modifier.width(60.dp),
-    )
+                            TextField(
+                                value = textohoras,
+                                onValueChange = {
+                                    textohoras = it
+                                    // Maneja la entrada de texto si es necesario
+                                },
+                                keyboardOptions = KeyboardOptions.Default.copy(
+                                    keyboardType = KeyboardType.Number
+                                ),
+                                modifier = Modifier.width(60.dp),
+                            )
 
-}
+                        }
 
-Row{
-    Column {
-
-
-        Button(onClick = {
-            if (contador <= 60) { // Verifica que el contador no sea menor que 0
-                botonMasPresionado()
-                contador += 1
-                textoMinutos = contador.toString()
-            }
-        }
-        ) {
-            Text("+ minuto")
-        }
-
-        Spacer(modifier = Modifier.width(18.dp))
-
-        Button(onClick = {
-            if (contador > 0) { // Verifica que el contador no sea menor que 0
-                botonMenosPresionado()
-                contador -= 1
-                textoMinutos = contador.toString()
-            }
-        }) {
-            Text("- minuto")
-        }}
-
-    Column {
-        Spacer(modifier = Modifier.width(25.dp))
-        Button(onClick = {
-
-            if (contadorh <= 24) {
-                botonMasHorasPresionado()
-                contadorh += 1
-                textohoras = contadorh.toString()
-            }
-        }
-        ) {
-            Text("+ horas")
-        }
-
-        Spacer(modifier = Modifier.width(25.dp))
-
-        Button(onClick = {
-            if (contadorh > 0) {
-                botonMenosHorasPresionado()
-                contadorh -= 1
-                textohoras = contadorh.toString()
-            }
-        }) {
-            Text("- horas")
-        }}
-}
+                        Row {
+                            Column {
 
 
+                                Button(onClick = {
+                                    if (contador <= 60) { // Verifica que el contador no sea menor que 0
+                                        botonMasPresionado()
+                                        contador += 1
+                                        textoMinutos = contador.toString()
+                                    }
+                                }
+                                ) {
+                                    Text("+ minuto")
+                                }
 
+                                Spacer(modifier = Modifier.width(18.dp))
 
+                                Button(onClick = {
+                                    if (contador > 0) { // Verifica que el contador no sea menor que 0
+                                        botonMenosPresionado()
+                                        contador -= 1
+                                        textoMinutos = contador.toString()
+                                    }
+                                }) {
+                                    Text("- minuto")
+                                }
+                            }
 
-                        
+                            Column {
+                                Spacer(modifier = Modifier.width(25.dp))
+                                Button(onClick = {
+
+                                    if (contadorh <= 24) {
+                                        botonMasHorasPresionado()
+                                        contadorh += 1
+                                        textohoras = contadorh.toString()
+                                    }
+                                }
+                                ) {
+                                    Text("+ horas")
+                                }
+
+                                Spacer(modifier = Modifier.width(25.dp))
+
+                                Button(onClick = {
+                                    if (contadorh > 0) {
+                                        botonMenosHorasPresionado()
+                                        contadorh -= 1
+                                        textohoras = contadorh.toString()
+                                    }
+                                }) {
+                                    Text("- horas")
+                                }
+                            }
+                        }
+
                     }
                 }
             )
         }
+
     }
 }
+
+
+
+
 
 
 @Composable
@@ -570,17 +521,6 @@ fun AudioPlayer(audioUrl: String) {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
 // TAREAS
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -627,7 +567,10 @@ fun CreateHWScreen(
     }
 
     PhotoNotesTheme {
-        Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.secondary) {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colors.secondary
+        ) {
             Scaffold(
                 topBar = {
                     GenericAppBar(
@@ -689,7 +632,11 @@ fun CreateHWScreen(
                             icon = R.drawable.video
                         )
 
-                        var isMapDialogVisible by remember { mutableStateOf(false) }
+                        var isMapDialogVisible by remember {
+                            mutableStateOf(
+                                false
+                            )
+                        }
 
                         FloatingActionButton(
                             onClick = {
@@ -804,14 +751,12 @@ fun CreateHWScreen(
 
 
 
-
-
-fun notificaciones(context: Context,
-                   idCanal: String,
-                   idNotificacion: Int,
-                   titulo: String,
-                   texto: String,
-                   priority: Int = NotificationCompat.PRIORITY_DEFAULT) {
+fun notificaciones( context: Context,
+                    idCanal: String,
+                    idNotificacion: Int,
+                    titulo: String,
+                    texto: String,
+                    priority: Int = NotificationCompat.PRIORITY_DEFAULT) {
 
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -821,6 +766,20 @@ fun notificaciones(context: Context,
             .setContentText(texto)
             .setPriority(priority)
         with(NotificationManagerCompat.from(context)) {
+            if (ActivityCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return
+            }
             notify(idNotificacion, builder.build())
         }
     }
@@ -839,11 +798,5 @@ fun CrearcanalNotificacion(idCanal: String, context: Context) {
     }
 }
 
-fun notificacionProgramada(context: Context) {
-    val intent = Intent(context, alarma::class.java)
-    val pendingIntent = PendingIntent.getBroadcast(context,
-        alarma.NOTIFICATION_ID, intent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
-    val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-    alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 1000, pendingIntent)
 
-}
+
